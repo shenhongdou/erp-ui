@@ -1,10 +1,11 @@
 import { defineConfig } from 'dumi';
 
 export default defineConfig({
-  title: 'dumi',
-  favicon:
-    'https://user-images.githubusercontent.com/9554297/83762004-a0761b00-a6a9-11ea-83b4-9c8ff721d4b8.png',
-  logo: 'https://user-images.githubusercontent.com/9554297/83762004-a0761b00-a6a9-11ea-83b4-9c8ff721d4b8.png',
-  outputPath: 'docs-dist',
+  title: 'erp-ui',
+  favicon: 'https://img01.weeecdn.com/static/www/favicon.ico',
+  logo: 'https://img01.weeecdn.com/static/www/_next/static/images/logo-1acb335df5c7433d696d506dce4784a4.svg',
+  outputPath: 'dist',
+  base: '/erp-ui',
+  publicPath: '/erp-ui/',
   // more config: https://d.umijs.org/config
 });
