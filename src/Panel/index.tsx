@@ -35,14 +35,13 @@ interface IProps {
 const LeftPanel: React.FC<IProps> = (props) => {
   const { title, showRefresh = true, refresh, children, width = 320, height = 500 } = props;
   const [collapse, setCollapse] = useState(false);
-  const [needAni, setNeedAni] = useState(false);
 
   const handleRefreshIconClick = () => {
     refresh && refresh();
   };
 
   return (
-    <div style={{ width: collapse ? '32px' : width + 'px', height }} className="contentLeft">
+    <div style={{ width: collapse ? 32 : width, height }} className="contentLeft">
       <div className={classNames(['head', { collapse: collapse }])}>
         {!collapse && <h2 className="title">{title}</h2>}
         <span>
