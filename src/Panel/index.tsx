@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import classNames from 'classnames';
 import { MenuFoldOutlined, MenuUnfoldOutlined, ReloadOutlined } from '@ant-design/icons';
 
-import styles from './index.less';
+import './index.less';
 
 interface IProps {
   /**
@@ -17,7 +17,7 @@ interface IProps {
   height?: number | string;
   /**
    * @description       panel的标题
-   * @default           320
+   * @default
    */
   title?: string;
   /**
@@ -42,35 +42,26 @@ const LeftPanel: React.FC<IProps> = (props) => {
   };
 
   return (
-    <div
-      style={{ width: collapse ? '32px' : width + 'px', height }}
-      className={classNames([styles.contentLeft])}
-    >
-      <div className={classNames([styles.head, { [styles.collapse]: collapse }])}>
-        {!collapse && <h2 className={styles.title}>{title}</h2>}
+    <div style={{ width: collapse ? '32px' : width + 'px', height }} className="contentLeft">
+      <div className={classNames(['head', { collapse: collapse }])}>
+        {!collapse && <h2 className="title">{title}</h2>}
         <span>
           {showRefresh && !collapse && (
             <ReloadOutlined
-              className={classNames([styles.marginRight10, styles.icon])}
+              className={classNames(['marginRight10', 'icon'])}
               onClick={handleRefreshIconClick}
             />
           )}
           {showRefresh && !collapse ? (
-            <MenuFoldOutlined
-              className={classNames([styles.icon])}
-              onClick={() => setCollapse(true)}
-            />
+            <MenuFoldOutlined className="icon" onClick={() => setCollapse(true)} />
           ) : (
-            <MenuUnfoldOutlined
-              className={classNames([styles.icon])}
-              onClick={() => setCollapse(false)}
-            />
+            <MenuUnfoldOutlined className="icon" onClick={() => setCollapse(false)} />
           )}
         </span>
       </div>
 
-      <div className={styles.content}>
-        {collapse ? <div className={classNames([styles.titleVertical])}>{title}</div> : children}
+      <div className="content">
+        {collapse ? <div className="titleVertical">{title}</div> : children}
       </div>
     </div>
   );

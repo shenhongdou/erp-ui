@@ -7,5 +7,14 @@ export default defineConfig({
   outputPath: 'dist',
   base: '/erp-ui',
   publicPath: '/erp-ui/',
+  lessLoader: {
+    test: /\.less$/i,
+    use: [
+      // compiles Less to CSS
+      "style-loader",
+      "css-loader",
+      "less-loader",
+    ],
+  }
   // more config: https://d.umijs.org/config
 });
