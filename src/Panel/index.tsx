@@ -30,6 +30,11 @@ interface IProps {
    * @default
    */
   refresh?: () => void;
+  /**
+   * @description       面板的内容
+   * @default
+   */
+  children?: React.ReactNode;
 }
 
 const LeftPanel: React.FC<IProps> = (props) => {
