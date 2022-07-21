@@ -11,10 +11,21 @@ export default defineConfig({
     test: /\.less$/i,
     use: [
       // compiles Less to CSS
-      "style-loader",
-      "css-loader",
-      "less-loader",
+      'style-loader',
+      'css-loader',
+      'less-loader',
     ],
-  }
+  },
+  extraBabelPlugins: [
+    [
+      'babel-plugin-import',
+      {
+        libraryName: 'antd',
+        libraryDirectory: 'es',
+        style: true,
+      },
+      'antd',
+    ],
+  ],
   // more config: https://d.umijs.org/config
 });

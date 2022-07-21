@@ -4,7 +4,7 @@ Demo:
 
 ```tsx
 import React from 'react';
-import { Panel } from 'erp-ui';
+import { Panel } from '@weee-erp/erp-ui';
 
 export default () => (
   <Panel title="my panel">
