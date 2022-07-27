@@ -11,25 +11,31 @@ const columns = [
     title: 'Date',
     dataIndex: 'date',
     width: 200,
+    ellipsis: true,
   },
   {
     title: 'Amount',
     dataIndex: 'amount',
     width: 100,
+    ellipsis: true,
   },
   {
     title: 'Type',
     dataIndex: 'type',
     width: 100,
+    ellipsis: true,
   },
   {
     title: 'Note',
     dataIndex: 'note',
     width: 100,
+    ellipsis: true,
   },
   {
     title: 'Action',
     key: 'action',
+    width: 100,
+    ellipsis: true,
     render: () => <a>Delete</a>,
   },
 ];
@@ -58,7 +64,7 @@ const dataSource = [
   },
 ];
 
-export default () => <ResizableColumnTable columns={columns} dataSource={dataSource} />;
+export default () => <ResizableColumnTable bordered columns={columns} dataSource={dataSource} />;
 ```
 
 <API src="./index.tsx"></API>

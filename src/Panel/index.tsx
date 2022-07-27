@@ -46,26 +46,26 @@ const LeftPanel: React.FC<IProps> = (props) => {
   };
 
   return (
-    <div style={{ width: collapse ? 32 : width, height }} className="contentLeft">
-      <div className={classNames(['head', { collapse: collapse }])}>
-        {!collapse && <h2 className="title">{title}</h2>}
+    <div style={{ width: collapse ? 32 : width, height }} className="erp-panel">
+      <div className={classNames(['erp-panel__head', { 'erp-panel__collapse': collapse }])}>
+        {!collapse && <h2 className="erp-panel__title">{title}</h2>}
         <span>
           {showRefresh && !collapse && (
             <ReloadOutlined
-              className={classNames(['marginRight10', 'icon'])}
+              className="erp-panel__icon erp-panel__icon-refresh"
               onClick={handleRefreshIconClick}
             />
           )}
           {showRefresh && !collapse ? (
-            <MenuFoldOutlined className="icon" onClick={() => setCollapse(true)} />
+            <MenuFoldOutlined className="erp-panel__icon" onClick={() => setCollapse(true)} />
           ) : (
-            <MenuUnfoldOutlined className="icon" onClick={() => setCollapse(false)} />
+            <MenuUnfoldOutlined className="erp-panel__icon" onClick={() => setCollapse(false)} />
           )}
         </span>
       </div>
 
-      <div className="content">
-        {collapse ? <div className="titleVertical">{title}</div> : children}
+      <div className="erp-panel__content">
+        {collapse ? <div className="erp-panel__title-vertical">{title}</div> : children}
       </div>
     </div>
   );

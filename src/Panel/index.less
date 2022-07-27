@@ -1,62 +1,60 @@
-.contentLeft {
-    background: #ffffff;
-    box-shadow: 0 1px 10px 0 #e9ebed;
-    border-radius: 16px;
-    margin-right: 16px;
-    white-space: nowrap;
-    overflow: hidden;
-    width: 320px;
+.erp-panel {
+  display: flex;
+  flex-direction: column;
+  width: 320px;
+  margin-right: 16px;
+  overflow: hidden;
+  white-space: nowrap;
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 1px 10px 0 #e9ebed;
+  transition: width 0.3s;
+
+  .erp-panel__head {
     display: flex;
-    flex-direction: column;
-    transition: width 0.3s;
+    align-items: center;
+    justify-content: space-between;
+    height: 43px;
+    padding: 0 19px;
+    color: #ffffff;
+    background: #33c491;
+    border-radius: 16px 16px 0 0;
 
-    .head {
-        height: 43px;
-        background: #33c491;
-        border-radius: 16px 16px 0 0;
-        padding: 0 19px;
-        color: #ffffff;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-
-        .title {
-            color: #ffffff;
-            font-size: 14px;
-            margin: 0;
-        }
-
+    .erp-panel__title {
+      margin: 0;
+      color: #ffffff;
+      font-size: 14px;
     }
+  }
 
-    .collapse {
-        padding: 0;
-        justify-content: center;
+  .erp-panel__collapse {
+    justify-content: center;
+    padding: 0;
+  }
+
+  .erp-panel__content {
+    flex: 1;
+    height: 0;
+    margin-top: 16px;
+    overflow: auto;
+
+    .erp-panel__title-vertical {
+      position: absolute;
+      padding: 6px;
+      color: rgba(0, 0, 0, 0.85);
+      font-weight: 500;
+      font-size: 14px;
+      font-family: PingFangSC-Medium, PingFang SC;
+      writing-mode: tb-rl;
     }
+  }
 
-    .content {
-        flex: 1;
-        height: 0;
-        overflow: auto;
-        margin-top: 16px;
+  .erp-panel__icon {
+    font-size: 16px;
+    cursor: pointer;
+  }
 
-        .titleVertical {
-            font-size: 14px;
-            font-family: PingFangSC-Medium, PingFang SC;
-            font-weight: 500;
-            color: rgba(0, 0, 0, 0.85);
-            writing-mode: tb-rl;
-            padding: 6px;
-            position: absolute;
-        }
-    }
-
-    .icon {
-        font-size: 16px;
-        cursor: pointer;
-    }
-
-    
-    .marginRight10 {
-        margin-right: 10px;
-    }
+  .erp-panel__icon-refresh {
+    margin-right: 16px;
+  }
 }
