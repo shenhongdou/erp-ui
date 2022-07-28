@@ -34,7 +34,6 @@ const columns = [
   {
     title: 'Action',
     key: 'action',
-    width: 100,
     ellipsis: true,
     render: () => <a>Delete</a>,
   },
