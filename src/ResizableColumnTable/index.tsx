@@ -30,11 +30,12 @@ export default (props: IProps) => {
 
   const handleResize =
     (index: number) =>
-    (e: any, { size }: any) => {
+    (e: any, { size }: { size: { width?: number } }) => {
       setNewColumns((columns) => {
         const nextColumns = [...columns];
         nextColumns[index] = {
           ...nextColumns[index],
+          // @ts-ignore
           width: size?.width,
         };
         return nextColumns;

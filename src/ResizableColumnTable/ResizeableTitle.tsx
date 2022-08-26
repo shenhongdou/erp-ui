@@ -3,7 +3,12 @@ import { Resizable } from 'react-resizable';
 
 import 'react-resizable/css/styles.css';
 
-const ResizeableTitle = (props) => {
+interface IProps {
+  onResize: () => void;
+  width?: number;
+}
+
+const ResizeableTitle = (props: IProps) => {
   const { onResize, width, ...restProps } = props;
 
   if (!width) {
