@@ -6,6 +6,11 @@ import './index.less';
 
 interface IProps {
   /**
+   * @description       panel容器的classname
+   *
+   */
+  className?: string;
+  /**
    * @description       panel的宽度
    * @default           320
    */
@@ -26,19 +31,27 @@ interface IProps {
    */
   showRefresh?: boolean;
   /**
-   * @description       点击refresh回调
+   * @description       点击refresh icon的回调函数
    * @default
    */
   refresh?: () => void;
   /**
-   * @description       面板的内容
+   * @description       panel要渲染的内容
    * @default
    */
   children?: React.ReactNode;
 }
 
 const LeftPanel: React.FC<IProps> = (props) => {
-  const { title, showRefresh = true, refresh, children, width = 320, height = 500 } = props;
+  const {
+    title,
+    showRefresh = true,
+    refresh,
+    children,
+    width = 320,
+    height = 500,
+    className,
+  } = props;
   const [collapse, setCollapse] = useState(false);
 
   const handleRefreshIconClick = () => {
@@ -46,7 +59,10 @@ const LeftPanel: React.FC<IProps> = (props) => {
   };
 
   return (
-    <div style={{ width: collapse ? 32 : width, height }} className="erp-panel">
+    <div
+      style={{ width: collapse ? 32 : width, height }}
+      className={classNames(['erp-panel', className])}
+    >
       <div className={classNames(['erp-panel__head', { 'erp-panel__collapse': collapse }])}>
         {!collapse && <h2 className="erp-panel__title">{title}</h2>}
         <span>
