@@ -1,15 +1,15 @@
 import React from 'react';
 import classNames from 'classnames';
 
-import styles from './index.less';
+import './index.less';
 
 export default () => {
   return (
     <>
       {/* 两栏布局 */}
       <h2>两栏等高布局</h2>
-      <div className={styles.wrapper}>
-        <div className={classNames([styles.column, styles.gap])}>
+      <div className="erp-layout__wrapper">
+        <div className={classNames(['erp-layout__column', 'erp-layout__gap'])}>
           content 1
           <br />
           content 2
@@ -21,7 +21,7 @@ export default () => {
           content 5
           <br />
         </div>
-        <div className={styles.column}>
+        <div className="erp-layout__column">
           content 1
           <br />
           content 2
@@ -43,22 +43,22 @@ export default () => {
 
       {/* 三栏布局 */}
       <h2>三栏等高布局</h2>
-      <div className={styles.wrapper}>
-        <div className={classNames([styles.column, styles.gap])}>
-          <div className={styles['left-content']}></div>
+      <div className="erp-layout__wrapper">
+        <div className={classNames(['erp-layout__column', 'erp-layout__gap'])}>
+          <div className="erp-layout__left-content"></div>
         </div>
 
-        <div className={classNames([styles.column, styles.gap])}></div>
+        <div className={classNames(['erp-layout__column', 'erp-layout__gap'])}></div>
 
-        <div className={styles.column}></div>
+        <div className="erp-layout__column"></div>
       </div>
 
       {/* 头部固定布局 */}
       <h2>头部固定布局</h2>
-      <div className={styles.wrapper2}>
-        <h2 className={styles.header}> header </h2>
-        <div className={styles.content}>
-          <div className={styles.langHeight}>
+      <div className="erp-layout__wrapper2">
+        <h2 className="erp-layout__header"> header </h2>
+        <div className="erp-layout__content">
+          <div className="erp-layout__langHeight">
             content 1
             <br />
             content 2

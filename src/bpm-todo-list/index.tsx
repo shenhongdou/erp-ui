@@ -28,12 +28,12 @@ interface IProps {
   onHeaderClick: () => void;
 }
 
-type ListItem = FetchData extends (...args: any[]) => Promise<{ list: infer R }> ? R : never;
+type List = FetchData extends (...args: any[]) => Promise<{ list: infer R }> ? R : never;
 
 export default (props: IProps) => {
   const { fetchData, onHeaderClick } = props;
 
-  const [list, setList] = useState<ListItem[]>([]);
+  const [list, setList] = useState<List>([]);
   const [total, setTotal] = useState(Infinity);
   const [loading, setLoading] = useState(false);
   const [pageNum, setPageNum] = useState(1);
