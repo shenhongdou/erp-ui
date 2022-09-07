@@ -1,0 +1,74 @@
+.erp-todo-item__wrapper {
+  margin-bottom: 16px;
+  border-radius: 16px;
+
+  .ant-card-head-title {
+    font-weight: bold;
+    font-size: 14px;
+    cursor: pointer;
+  }
+
+  .ant-card-extra {
+    font-weight: bold;
+    font-size: 12px;
+  }
+
+  .ant-card-body {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0;
+  }
+
+  .erp-todo-item {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    padding: 24px;
+    border-right: 1px solid #f0f0f0;
+
+    .erp-todo-item__header {
+      height: 32px;
+      color: rgba(0, 0, 0, 0.45);
+      font-size: 12px;
+      line-height: 32px;
+    }
+
+    .erp-todo-item__content {
+      height: 32px;
+      font-weight: bold;
+      font-size: 12px;
+      line-height: 32px;
+    }
+
+    &:nth-last-of-type(1) {
+      border-right: none;
+    }
+  }
+}
+
+.ant-card-head {
+  border-radius: 16px 16px 0 0;
+}
+
+.erp-todo-item__pending {
+  .ant-card-head {
+    color: #fff;
+    background: #00c6d2;
+  }
+
+  .ant-card-extra {
+    color: #fff;
+  }
+}
+
+.erp-todo-item__end {
+  .ant-card-head {
+    color: #fff;
+    background: #33c491;
+  }
+
+  .ant-card-extra {
+    color: #fff;
+  }
+}

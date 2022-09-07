@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <p>What fruits do you like?</p>
+<ol ondragstart="dragStartHandler(event)">
+ <li draggable="true" data-value="fruit-apple">Apples</li>
+ <li draggable="true" data-value="fruit-orange">Oranges</li>
+ <li draggable="true" data-value="fruit-pear">Pears</li>
+</ol>
+<script>
+  var internalDNDType = 'text/x-example'; // set this to something specific to your site
+  function dragStartHandler(event) {
+    if (event.target instanceof HTMLLIElement) {
+      // use the element's data-value="" attribute as the value to be moving:
+    //   console.log(event.target.dataset.value, 'event.target.dataset.value')
+    //   event.dataTransfer.setData(internalDNDType, event.target.dataset.value);
+      event.dataTransfer.effectAllowed = 'move'; // only allow moves
+    } else {
+      event.preventDefault(); // don't allow selection to be dragged
+    }
+  }
+</script>
+</body>
+</html>

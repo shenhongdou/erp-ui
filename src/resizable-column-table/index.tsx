@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Table } from 'antd';
 import { ColumnsType } from 'antd/es/table';
 
-import ResizeableTitle from './ResizeableTitle';
+import ResizeableTitle from './resizeable-title';
 import '../global.less';
 
 interface IProps<T = any> {

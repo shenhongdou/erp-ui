@@ -1,0 +1,36 @@
+.erp-todo-list {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 16px 16px 0;
+
+  .erp-todo-list__header {
+    display: flex;
+    flex-direction: row-reverse;
+    align-items: center;
+    margin-bottom: 16px;
+    padding-right: 16px;
+    text-align: right;
+
+    .erp-todo-list__search,
+    .erp-todo-list__sort {
+      margin-left: 16px;
+      color: rgba(0, 0, 0, 0.45);
+      font-size: 18px;
+      cursor: pointer;
+    }
+
+    .erp-todo-list__keyword {
+      width: 260px;
+    }
+  }
+
+  .erp-todo-list__wrapper {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    height: 0;
+    padding-right: 8px;
+    overflow: auto;
+  }
+}
