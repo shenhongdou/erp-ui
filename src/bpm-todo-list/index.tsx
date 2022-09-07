@@ -3,7 +3,7 @@ import { Input, Skeleton, Divider, Empty } from 'antd';
 import InfiniteScroll from 'react-infinite-scroll-component';
 
 import MyIcon from '../my-icon';
-import TaskItem from './item';
+import TaskItem from '../bpm-todo-list/item';
 
 import './index.less';
 
