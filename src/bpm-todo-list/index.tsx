@@ -3,37 +3,38 @@ import { Input, Skeleton, Divider, Empty } from 'antd';
 import InfiniteScroll from 'react-infinite-scroll-component';
 
 import MyIcon from '../my-icon';
-import TaskItem from '../bpm-todo-list/item';
+import BpmTodoItem, { Item } from '../bpm-todo-item';
 
 import './index.less';
 
-type Sort = 'desc' | 'asc';
+export type Sort = 'desc' | 'asc';
 
-interface IParams {
+export interface IParams {
   pageNum: number;
   sort: Sort;
   isFirstLoading: boolean;
   keyWord: string;
 }
 
-interface FetchData {
-  (params: IParams): Promise<{
-    list: any[];
+interface IProps {
+  /**
+   * @description 请求数据的方法
+   */
+  fetchData: (params: IParams) => Promise<{
+    list: Item[];
     total: number;
   }>;
-}
 
-interface IProps {
-  fetchData: FetchData;
-  onHeaderClick: () => void;
+  /**
+   * @description 点击头部的回调
+   */
+  onHeaderClick?: () => void;
 }
-
-type List = FetchData extends (...args: any[]) => Promise<{ list: infer R }> ? R : never;
 
 export default (props: IProps) => {
   const { fetchData, onHeaderClick } = props;
 
-  const [list, setList] = useState<List>([]);
+  const [list, setList] = useState<Item[]>([]);
   const [total, setTotal] = useState(Infinity);
   const [loading, setLoading] = useState(false);
   const [pageNum, setPageNum] = useState(1);
@@ -41,13 +42,18 @@ export default (props: IProps) => {
   const [sort, setSort] = useState<Sort>('desc');
 
   const getList = async (pageNum: number, sort: Sort, isFirstLoading: boolean = true) => {
+    if (typeof fetchData !== 'function') {
+      console.error(new TypeError('fetchData should be a function'));
+      return;
+    }
+
     setLoading(true);
     const ret = await fetchData({ pageNum, sort, keyWord, isFirstLoading }).catch(() => {});
     setLoading(false);
 
     if (!ret) return;
     const newList = pageNum === 1 ? ret?.list || [] : [...list, ...(ret?.list || [])];
-    console.log(ret, 'ret');
+
     setList(newList);
     setTotal(ret?.total || 0);
   };
@@ -100,7 +106,7 @@ export default (props: IProps) => {
             scrollableTarget="listWrapper"
           >
             {list?.map((item) => (
-              <TaskItem key={item.taskId} data={item} onHeaderClick={onHeaderClick} />
+              <BpmTodoItem key={item.taskId} data={item} onHeaderClick={onHeaderClick} />
             ))}
           </InfiniteScroll>
         ) : (

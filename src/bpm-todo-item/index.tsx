@@ -2,11 +2,28 @@ import React from 'react';
 import { Card } from 'antd';
 import classNames from 'classnames';
 
-import './item.less';
+import './index.less';
+
+export interface Item {
+  businessKey: string;
+  createTime: string;
+  creator: string;
+  flowName: string;
+  onlineTableId: string;
+  processInstanceTitle: string;
+  onlineTable: {
+    ticket_type: string;
+  }[];
+  status?: string;
+  processInstanceId: string;
+  processDefinitionId: string;
+  taskId: string;
+  taskCreateTime: string;
+}
 
 interface IProps {
-  data: any;
-  onHeaderClick: () => void;
+  data: Item;
+  onHeaderClick?: () => void;
 }
 
 export default (props: IProps) => {
@@ -23,7 +40,7 @@ export default (props: IProps) => {
         { 'erp-todo-item__pending': data.status === 'pending' },
         { 'erp-todo-item__end': data.status === 'end' },
       ])}
-      title={<span onClick={handleTitleClick}>{data?.processInstanceTitle}</span>}
+      title={<div onClick={handleTitleClick}>{data?.processInstanceTitle}</div>}
       extra={data?.taskCreateTime}
     >
       <div className="erp-todo-item">
