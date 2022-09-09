@@ -3,8 +3,10 @@ import { Table } from 'antd';
 import { ColumnsType } from 'antd/es/table';
 
 import ResizeableTitle from './resizeable-title';
+
 import '../global.less';
 
+// table
 interface IProps<T = any> {
   columns: ColumnsType<T>[];
   dataSource: T[];

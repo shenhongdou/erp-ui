@@ -6,7 +6,7 @@ import './index.less';
 export default () => {
   return (
     <>
-      {/* 两栏布局 */}
+      {/* 两栏等高布局 */}
       <h2>两栏等高布局</h2>
       <div className="erp-layout__wrapper">
         <div className={classNames(['erp-layout__column', 'erp-layout__gap'])}>
@@ -41,7 +41,7 @@ export default () => {
         </div>
       </div>
 
-      {/* 三栏布局 */}
+      {/* 三栏等高布局 */}
       <h2>三栏等高布局</h2>
       <div className="erp-layout__wrapper">
         <div className={classNames(['erp-layout__column', 'erp-layout__gap'])}>
