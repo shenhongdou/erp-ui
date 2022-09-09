@@ -66,4 +66,4 @@ const dataSource = [
 export default () => <ResizableColumnTable bordered columns={columns} dataSource={dataSource} />;
 ```
 
-<API src="./index.tsx"></API>
+<API></API>
