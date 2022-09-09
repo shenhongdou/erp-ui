@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Input, Skeleton, Divider, Empty } from 'antd';
 import InfiniteScroll from 'react-infinite-scroll-component';
 
-import MyIcon from '../my-icon';
-import BpmTodoItem, { Item } from '../bpm-todo-item';
+import MyIcon from '../MyIcon';
+import BpmTodoItem, { Item } from '../BpmTodoItem';
 
 import './index.less';
 
