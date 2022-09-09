@@ -46,8 +46,8 @@ export default () => {
 
 ### IParams
 
-<API src="../bpm-todo-item/param.tsx" hideTitle></API>
+<API src="../BpmTodoItem/param.tsx" hideTitle></API>
 
 ### Item
 
-<API src="../bpm-todo-item/item.tsx" hideTitle></API>
+<API src="../BpmTodoItem/item.tsx" hideTitle></API>
