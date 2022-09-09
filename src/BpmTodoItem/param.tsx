@@ -14,7 +14,7 @@ interface IProps {
   /**
    * @description 搜索关键词
    */
-  keyWord: string;
+  keyword: string;
 }
 
 export default (props: IProps) => {

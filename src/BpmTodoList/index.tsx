@@ -13,7 +13,7 @@ export interface IParams {
   pageNum: number;
   sort: Sort;
   isFirstLoading: boolean;
-  keyWord: string;
+  keyword: string;
 }
 
 interface IProps {
@@ -38,7 +38,7 @@ export default (props: IProps) => {
   const [total, setTotal] = useState(Infinity);
   const [loading, setLoading] = useState(false);
   const [pageNum, setPageNum] = useState(1);
-  const [keyWord, setKeyWord] = useState('');
+  const [keyword, setKeyWord] = useState('');
   const [sort, setSort] = useState<Sort>('desc');
 
   const getList = async (pageNum: number, sort: Sort, isFirstLoading: boolean = true) => {
@@ -48,7 +48,7 @@ export default (props: IProps) => {
     }
 
     setLoading(true);
-    const ret = await fetchData({ pageNum, sort, keyWord, isFirstLoading }).catch(() => {});
+    const ret = await fetchData({ pageNum, sort, keyword, isFirstLoading }).catch(() => {});
     setLoading(false);
 
     if (!ret) return;
@@ -89,7 +89,7 @@ export default (props: IProps) => {
 
         <Input.Search
           className="erp-todo-list__keyword"
-          value={keyWord}
+          value={keyword}
           onChange={(e) => setKeyWord(e.target.value)}
           onSearch={handleSearch}
         />
