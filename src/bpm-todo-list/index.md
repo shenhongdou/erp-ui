@@ -35,7 +35,7 @@ export default () => {
   };
 
   return (
-    <div style={{ height: '800px', overflow: 'auto', background: 'rgb(240, 245, 243)' }}>
+    <div style={{ height: '800px', background: 'rgb(240, 245, 243)' }}>
       <BpmTodoList fetchData={fetchData} onHeaderClick={handleHeaderClick} />
     </div>
   );
