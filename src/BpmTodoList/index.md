@@ -14,6 +14,7 @@ function getData() {
     onlineTable: [{ ticket_type: 'ticket_type' }],
     createTime: new Date().toLocaleDateString(),
     taskCreateTime: new Date().toLocaleDateString(),
+    nodeLink: 'https://tb1.sayweee.net/zh',
   }));
 }
 
@@ -30,13 +31,9 @@ export default () => {
     });
   };
 
-  const handleHeaderClick = () => {
-    window.open('/');
-  };
-
   return (
     <div style={{ height: '800px', background: 'rgb(240, 245, 243)' }}>
-      <BpmTodoList fetchData={fetchData} onHeaderClick={handleHeaderClick} />
+      <BpmTodoList fetchData={fetchData} />
     </div>
   );
 };
