@@ -28,7 +28,7 @@ interface IProps {
   /**
    * @description 点击头部的回调
    */
-  onHeaderClick?: () => void;
+  onHeaderClick?: (data: Item) => void;
 }
 
 export default (props: IProps) => {

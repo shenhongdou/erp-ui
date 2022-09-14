@@ -19,18 +19,22 @@ export interface Item {
   processDefinitionId: string;
   taskId: string;
   taskCreateTime: string;
+  nodeLink?: string;
 }
 
 interface IProps {
   data: Item;
-  onHeaderClick?: () => void;
+  onHeaderClick?: (data: Item) => void;
 }
 
 export default (props: IProps) => {
   const { data, onHeaderClick } = props;
 
   const handleTitleClick = () => {
-    typeof onHeaderClick === 'function' && onHeaderClick();
+    if (data?.nodeLink) {
+      window.open(data.nodeLink);
+    }
+    typeof onHeaderClick === 'function' && onHeaderClick(data);
   };
 
   return (
