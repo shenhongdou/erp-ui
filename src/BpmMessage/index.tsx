@@ -17,7 +17,7 @@ export default (props: IProps) => {
   const { fetchList, handleSend, handleUserSearch } = props;
 
   const [list, setList] = useState<ListItem[]>([]);
-  const [users, setUsers] = useState([]);
+  const [users, setUsers] = useState<any[]>([]);
   const [content, setContent] = useState('');
 
   let isFirstFetchList = true;
