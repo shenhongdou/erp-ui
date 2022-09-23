@@ -37,12 +37,23 @@ export default () => {
     }));
   };
 
+  const handleUserSearch = async () => {
+    return [
+      { id: 1, name: 'shd' },
+      { id: 2, name: 'zhangxiulong' },
+    ];
+  };
+
   return (
     <div style={{ width: '500px', height: '800px' }}>
       <BpmMessage
         fetchList={fetchList}
         handleSend={(data) => {
           console.log(data, 'data');
+        }}
+        handleUserSearch={handleUserSearch}
+        onUpload={(file) => {
+          console.log(file, 'file');
         }}
       ></BpmMessage>
     </div>
