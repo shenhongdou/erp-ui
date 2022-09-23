@@ -20,8 +20,6 @@ export default (props: IProps) => {
   const [users, setUsers] = useState<any[]>([]);
   const [content, setContent] = useState('');
 
-  let isFirstFetchList = true;
-
   const getList = async () => {
     if (typeof fetchList !== 'function') {
       console.error(new TypeError('fetchList should be a function'));
@@ -30,12 +28,7 @@ export default (props: IProps) => {
     const list = await fetchList().catch(() => {});
     if (!list) return;
 
-    if (isFirstFetchList) {
-      setList(list);
-      isFirstFetchList = false;
-    } else {
-      setList((l) => [...(l || []), ...list]);
-    }
+    setList(list);
   };
 
   const handleChange = (content: string) => {
