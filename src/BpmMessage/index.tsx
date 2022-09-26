@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef, useCallback } from 'react';
 import { Mentions, Button } from 'antd';
 import { PaperClipOutlined } from '@ant-design/icons';
 import type { OptionProps } from 'antd/es/mentions';
@@ -6,6 +6,7 @@ import type { OptionProps } from 'antd/es/mentions';
 import BpmMessageItem, { ListItem } from '../BpmMessageItem';
 
 import { fetchList, fetchUsers, doSendMessage, uploadFile } from './apis';
+import { debounce } from '../util';
 
 import './index.less';
 
@@ -24,9 +25,25 @@ enum ChatType {
 }
 
 interface IProps {
+  /**
+   * @description       环境
+   *
+   */
   env: 'tb1' | 'tb2' | 'pro';
+  /**
+   * @description       不需要Bearer
+   *
+   */
   token: string;
+  /**
+   * @description       processDefinitionId
+   *
+   */
   processDefinitionId: string;
+  /**
+   * @description       processInstanceId
+   *
+   */
   processInstanceId: string;
 }
 
@@ -73,12 +90,7 @@ export default (props: IProps) => {
       console.error(err);
     });
 
-    setList(
-      (ret?.data || [])?.map((item) => ({
-        ...item,
-        isCurrentUser: Math.random() > 0.5,
-      })),
-    );
+    setList((ret?.data || []).map((item) => ({ ...item, isCurrentUser: Math.random() > 0.5 })));
 
     // handleNext();
   };
@@ -87,33 +99,40 @@ export default (props: IProps) => {
     setContent(content);
   };
 
+  const debouncedFetchUsers = useCallback(
+    debounce(async (userName: string) => {
+      fetchUsers(env, token, {
+        orderParam: [
+          {
+            fieldName: 'createTime',
+            asc: 1,
+          },
+        ],
+        pageParam: {
+          pageNum: 1,
+          pageSize: 100,
+        },
+        sysUserDtoFilter: {
+          loginName: userName,
+        },
+      })
+        .then((data) => {
+          setUsers(data?.data?.dataList || []);
+        })
+        .finally(() => {
+          setLoading(false);
+        })
+        .catch((err) => {
+          console.error(err);
+        });
+    }),
+    [],
+  );
+
   const handleSearch = (userName: string) => {
     setLoading(true);
-
-    fetchUsers(env, token, {
-      orderParam: [
-        {
-          fieldName: 'createTime',
-          asc: 1,
-        },
-      ],
-      pageParam: {
-        pageNum: 1,
-        pageSize: 100,
-      },
-      sysUserDtoFilter: {
-        loginName: userName,
-      },
-    })
-      .then((data) => {
-        setUsers(data?.data?.dataList || []);
-      })
-      .finally(() => {
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.error(err);
-      });
+    setUsers([]);
+    debouncedFetchUsers(userName);
   };
 
   const handleSelect = (option: any, prefix: string) => {
@@ -153,7 +172,6 @@ export default (props: IProps) => {
   };
 
   const getMentionUsers = () => {
-    console.log(chatMentionUsers, 'chatMentionUsers');
     return chatMentionUsers
       ?.filter((item) => content.indexOf(`@${item.value}`) > -1)
       ?.map((item) => item.key);

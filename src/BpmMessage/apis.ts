@@ -38,7 +38,6 @@ export const fetchUsers = async (env: 'tb1' | 'tb2' | 'pro', token: string, para
 };
 
 export const doSendMessage = async (env: 'tb1' | 'tb2' | 'pro', token: string, params: any) => {
-  console.log(params, 'params');
   const response = await fetch(`${getApiPrefixAccordEnv(env)}/task/operator/chatLog/add`, {
     method: 'POST',
     headers: {

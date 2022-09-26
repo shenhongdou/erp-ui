@@ -3,13 +3,20 @@
   margin-bottom: 10px;
 
   .erp-bpm-message-avatar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
     width: 36px;
     height: 36px;
+    color: #fff;
+    font-size: 20px;
+    background: #cce4fc;
     border-radius: 50%;
   }
 
   .erp-bpm-message-main {
-    width: 100%;
+    flex: 1;
+    width: 0;
     margin-left: 10px;
 
     .erp-bpm-message-main__header {
@@ -64,13 +71,16 @@
 .erp-bpm-message-item__right {
   flex-direction: row-reverse;
 
+  .erp-bpm-message-avatar {
+    background: #00875a;
+  }
+
   .erp-bpm-message-main {
     display: flex;
     flex-direction: column;
     align-items: flex-end;
     margin-right: 10px;
     margin-left: 0;
-    // text-align: right;
 
     .erp-bpm-message-main__header {
       display: flex;

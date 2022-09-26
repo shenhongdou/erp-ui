@@ -2,6 +2,8 @@ import React from 'react';
 import classNames from 'classnames';
 import { Image } from 'antd';
 
+import { getFileLogo, getAvatarTxt } from '../util';
+
 export interface ListItem {
   chatContent: string;
   chatType: number;
@@ -25,28 +27,6 @@ import './index.less';
 
 const defaultAvatar = 'https://www.sayweee.com/css/img/avatar_unknown.png';
 
-const FILE_LOGOS = {
-  txt: 'https://cdn.sayweee.net/cs/image/087/921/3D17C4036E590BFF_0x0.png',
-  image: 'https://cdn.sayweee.net/cs/image/030/447/47F5570D100BD6B_0x0.png',
-  pdf: 'https://cdn.sayweee.net/cs/image/431/590/4CA8155B3B9495BF_0x0.png',
-  video: 'https://cdn.sayweee.net/cs/image/688/479/276A5343F14EB58_0x0.png',
-  other: 'https://cdn.sayweee.net/cs/image/040/838/1796333A1B5AA392_0x0.png',
-};
-
-const getFileLogo = (fileType: string) => {
-  if (!fileType) return;
-
-  if (fileType.endsWith('document')) return FILE_LOGOS.txt;
-
-  if (fileType.endsWith('pdf')) return FILE_LOGOS.pdf;
-
-  if (fileType.endsWith('jpeg') || fileType.endsWith('png')) return FILE_LOGOS.image;
-
-  if (fileType.endsWith('mp4')) return FILE_LOGOS.video;
-
-  return FILE_LOGOS.other;
-};
-
 export default (props: IProps) => {
   const { data } = props;
 
@@ -57,7 +37,8 @@ export default (props: IProps) => {
         { 'erp-bpm-message-item__right': data.isCurrentUser },
       ])}
     >
-      <img className="erp-bpm-message-avatar" src={defaultAvatar} />
+      <span className="erp-bpm-message-avatar">{getAvatarTxt(data.userName)}</span>
+      {/* <img className="erp-bpm-message-avatar" src={defaultAvatar} /> */}
 
       <div className="erp-bpm-message-main">
         <div className="erp-bpm-message-main__header">
