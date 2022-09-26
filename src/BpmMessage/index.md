@@ -45,7 +45,15 @@ export default () => {
   };
 
   return (
-    <div style={{ width: '500px', height: '800px' }}>
+    <div
+      style={{
+        width: '500px',
+        height: '800px',
+        margin: 'auto',
+        border: '1px solid #eee',
+        padding: '10px',
+      }}
+    >
       <BpmMessage
         fetchList={fetchList}
         handleSend={(data) => {

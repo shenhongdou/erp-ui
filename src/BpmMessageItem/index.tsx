@@ -1,5 +1,6 @@
 import React from 'react';
 import classNames from 'classnames';
+import { Image } from 'antd';
 
 export interface ListItem {
   chatContent: string;
@@ -42,7 +43,16 @@ export default (props: IProps) => {
           <span className="erp-bpm-message-main__time">{data.recCreateTime}</span>
         </div>
 
-        <p className="erp-bpm-message-main__content">{data.chatContent}</p>
+        {data.chatType === 1 ? (
+          <p
+            className="erp-bpm-message-main__content"
+            dangerouslySetInnerHTML={{ __html: data.chatContent }}
+          ></p>
+        ) : data.chatType === 2 ? (
+          <Image src={data.chatContent} />
+        ) : (
+          <div>{data.chatContent}</div>
+        )}
       </div>
     </div>
   );

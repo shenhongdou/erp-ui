@@ -6,10 +6,16 @@ import BpmMessageItem, { ListItem } from '../BpmMessageItem';
 
 import './index.less';
 
+interface User {
+  showName: string;
+  loginName: string;
+  userId: string;
+}
+
 interface IProps {
   fetchList: () => Promise<ListItem[]>;
   onSend: (content: string) => void;
-  onUserSearch: () => Promise<any[]>;
+  onUserSearch: (userName: string) => Promise<User[]>;
   onUpload: (file: File) => Promise<string>;
 }
 
@@ -19,10 +25,11 @@ export default (props: IProps) => {
   const { fetchList, onSend, onUserSearch, onUpload } = props;
 
   const [list, setList] = useState<ListItem[]>([]);
-  const [users, setUsers] = useState<any[]>([]);
+  const [users, setUsers] = useState<User[]>([]);
   const [content, setContent] = useState('');
-  const uploadRef = useRef<HTMLInputElement>();
   const [loading, setLoading] = useState(false);
+
+  const uploadRef = useRef<HTMLInputElement | null>(null);
 
   const getList = async () => {
     if (typeof fetchList !== 'function') {
@@ -39,14 +46,14 @@ export default (props: IProps) => {
     setContent(content);
   };
 
-  const handleSearch = () => {
+  const handleSearch = (userName: string) => {
     if (typeof onUserSearch !== 'function') {
       console.error(new TypeError('onUserSearch should be a function'));
       return;
     }
     setLoading(true);
 
-    onUserSearch()
+    onUserSearch(userName)
       .then((users) => {
         setUsers(users);
       })
@@ -60,13 +67,17 @@ export default (props: IProps) => {
     uploadRef?.current?.click();
   };
 
-  const handleFileChange = (e) => {
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (typeof onUpload !== 'function') {
       console.error(new TypeError('onUpload should be a function'));
       return;
     }
 
-    onUpload(e.target.files[0]);
+    const file = e.target?.files?.[0];
+
+    if (!file) return;
+
+    onUpload(file);
   };
 
   const handleSendData = () => {
@@ -112,8 +123,8 @@ export default (props: IProps) => {
           onChange={handleChange}
         >
           {users?.map((item) => (
-            <Mentions.Option value={item.name} key={item.id}>
-              {item.name}
+            <Mentions.Option value={item.showName} key={item.userId}>
+              {item.showName}
             </Mentions.Option>
           ))}
         </Mentions>
