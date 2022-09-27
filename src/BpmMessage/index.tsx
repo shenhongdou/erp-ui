@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef, useCallback } from 'react';
-import { Mentions, Button, message } from 'antd';
+import { Mentions, Button, message, Empty } from 'antd';
 import { PaperClipOutlined } from '@ant-design/icons';
 import type { OptionProps } from 'antd/es/mentions';
 
@@ -58,6 +58,7 @@ export default (props: IProps) => {
   const [chatMentionUsers, setchatMentionUsers] = useState<OptionProps[]>([]);
 
   const uploadRef = useRef<HTMLInputElement | null>(null);
+  const listRef = useRef<HTMLDivElement | null>(null);
 
   const handleNext = () => {
     timer = setTimeout(() => {
@@ -74,7 +75,7 @@ export default (props: IProps) => {
       orderParam: [
         {
           fieldName: 'recCreateTime',
-          asc: 0,
+          asc: 1,
         },
       ],
     }).catch((err) => {
@@ -171,6 +172,11 @@ export default (props: IProps) => {
   };
 
   const handleSend = async (content: string, chatType: ChatType, fileName?: string) => {
+    if (!content?.trim()) {
+      message.error('please input something first');
+      return;
+    }
+
     const ret = doSendMessage(env, token, {
       chatLogDto: {
         chatContent: content,
@@ -186,11 +192,24 @@ export default (props: IProps) => {
     if (!ret) return;
 
     setContent('');
-    getList();
+    await getList();
+    setTimeout(() => {
+      const height = listRef?.current?.scrollHeight;
+      listRef?.current?.scrollTo({
+        top: height,
+        behavior: 'smooth',
+      });
+    });
   };
 
   const handleSendTxt = () => {
     handleSend(content, 1);
+  };
+
+  const handlKeyDown = (e: any) => {
+    if (e.keyCode === 13 && e.ctrlKey) {
+      handleSend(content, 1);
+    }
   };
 
   useEffect(() => {
@@ -203,7 +222,8 @@ export default (props: IProps) => {
 
   return (
     <div className="erp-bpm-message">
-      <div className="erp-bpm-message__list">
+      <div className="erp-bpm-message__list" ref={listRef}>
+        {!list?.length && <Empty />}
         {list?.map((item) => (
           <BpmMessageItem key={item.pkid} data={item} />
         ))}
@@ -217,6 +237,7 @@ export default (props: IProps) => {
           onSearch={handleSearch}
           onChange={handleChange}
           onSelect={handleSelect}
+          onKeyDown={handlKeyDown}
         >
           {users?.map((item) => (
             <Mentions.Option value={item.showName} key={item.loginName}>
