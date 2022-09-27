@@ -6,63 +6,28 @@ Demo:
 import React, { useState, useEffect } from 'react';
 import { BpmMessage } from '@weee-erp/erp-ui';
 
-const getContent = () => {
-  const contents = [
-    '第73届国际宇航大会18日至22日在法国巴黎举行。国际宇航联合会21日专门为获得该组织年度最高奖、2022年度“世界航天奖”的中国天问一号火星探测团队举办成果介绍会。 ',
-    '“世界航天奖”旨在表彰在航天科学、航天技术、航天医学、航天工程管理等领域取得杰出成就的航天科技人员。',
-    '孙鑫晶 邢建桥',
-    '刘思远',
-    '新华社音视频部制作',
-    '新华社国际传播融合平台出品',
-    '全球连线｜问鼎“世界航天奖” 天问一号团队获赞誉',
-  ];
+const TOKEN =
+  'eyJraWQiOiI4NjBlYjQ4Yy0wNDFmLTQ1YTctYTAxOS0wNmQ3NjI0MjZhNjMiLCJhbGciOiJSUzI1NiJ9.eyJzdWIiOiI1YjNhYmM1Zi1kMzhjLTRmODUtOGFlYi03NDg3ZTkwNGNiNjAiLCJyb2xlX25hbWVzIjoiYWRtaW4sREFUQSBUTCxEQVRBIFBNLENlbnRyYWwgTUtUIERldmVsb3BlcixDZW50cmFsIE1LVCBDb3Vwb24gTWFuZWdlbWVudCIsInVzZXJfaWQiOiI3ODM5NDQ3IiwidXNlcl9uYW1lIjoieGl1bG9uZy56aGFuZyIsImlzcyI6ImlzdGlvQHNheXdlZWUuY29tIiwiaWQiOiIzODA1IiwidHlwZSI6InVzZXIiLCJleHAiOjE2NjY3MTg1MDUsInJlYWxtX2lkIjoiMyIsImlzX2xvZ2luIjp0cnVlLCJyb2xlX2lkcyI6IjQsNTEsNTIsNTUsNzQsOTEsMTIxLDEyMiJ9.YlvuQgoNI5oZvGWqKfc7-09OFkS8-oicSHkWZQYzsSbQ5UdsvzgbDSwP__Uhb-ag48gGtYLnZPqO2HkQwj1tQ5it9AR4fxnh68WHjmQAf3gvfjt7Ca9-8gqgbWCI-qlbweMA1-GK2yXH_oxcwzIpGQqRHc8WW9G-ct5OTwT81ks';
 
-  const index = (Math.random() * 10).toFixed() % 7;
-  return contents[index];
-};
+const processDefinitionId = 'po_receipt_01:11:266c2c6a-3b27-11ed-a00c-d6e149b04ae4';
+const processInstanceId = '4194fe2a-3b27-11ed-8f53-1e6f90fe6f04';
 
 export default () => {
-  const fetchList = async () => {
-    return new Array(10).fill(0).map((_, index) => ({
-      chatContent: getContent(),
-      chatType: 1,
-      isCurrentUser: Math.random() > 0.5,
-      processDefinitionId: 'xxx',
-      processInstanceId: 'xxx',
-      recCreateTime: new Date().toLocaleDateString(),
-      userEmail: 'xiulong.zhang@sayweee.com',
-      userId: '0',
-      userName: 'xiulong.zhang@sayweee.com',
-      userShowName: 'xiulong.zhang',
-    }));
-  };
-
-  const handleUserSearch = async () => {
-    return [
-      { id: 1, name: 'shd' },
-      { id: 2, name: 'zhangxiulong' },
-    ];
-  };
-
   return (
     <div
       style={{
         width: '500px',
-        height: '800px',
+        height: '600px',
         margin: 'auto',
         border: '1px solid #eee',
         padding: '10px',
       }}
     >
       <BpmMessage
-        fetchList={fetchList}
-        handleSend={(data) => {
-          console.log(data, 'data');
-        }}
-        handleUserSearch={handleUserSearch}
-        onUpload={(file) => {
-          console.log(file, 'file');
-        }}
+        env="tb1"
+        token={TOKEN}
+        processDefinitionId={processDefinitionId}
+        processInstanceId={processInstanceId}
       ></BpmMessage>
     </div>
   );

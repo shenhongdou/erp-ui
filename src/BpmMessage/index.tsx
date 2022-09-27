@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef, useCallback } from 'react';
-import { Mentions, Button } from 'antd';
+import { Mentions, Button, message } from 'antd';
 import { PaperClipOutlined } from '@ant-design/icons';
 import type { OptionProps } from 'antd/es/mentions';
 
@@ -10,7 +10,6 @@ import { debounce } from '../util';
 
 import './index.less';
 
-// TODO 选人加入debounce, 头像优化
 interface User {
   showName: string;
   loginName: string;
@@ -49,16 +48,8 @@ interface IProps {
 
 let timer: number;
 
-const TOKEN =
-  'eyJraWQiOiI4NjBlYjQ4Yy0wNDFmLTQ1YTctYTAxOS0wNmQ3NjI0MjZhNjMiLCJhbGciOiJSUzI1NiJ9.eyJzdWIiOiI1YjNhYmM1Zi1kMzhjLTRmODUtOGFlYi03NDg3ZTkwNGNiNjAiLCJyb2xlX25hbWVzIjoiYWRtaW4sREFUQSBUTCxEQVRBIFBNLENlbnRyYWwgTUtUIERldmVsb3BlcixDZW50cmFsIE1LVCBDb3Vwb24gTWFuZWdlbWVudCIsInVzZXJfaWQiOiI3ODM5NDQ3IiwidXNlcl9uYW1lIjoieGl1bG9uZy56aGFuZyIsImlzcyI6ImlzdGlvQHNheXdlZWUuY29tIiwiaWQiOiIzODA1IiwidHlwZSI6InVzZXIiLCJleHAiOjE2NjY3MTg1MDUsInJlYWxtX2lkIjoiMyIsImlzX2xvZ2luIjp0cnVlLCJyb2xlX2lkcyI6IjQsNTEsNTIsNTUsNzQsOTEsMTIxLDEyMiJ9.YlvuQgoNI5oZvGWqKfc7-09OFkS8-oicSHkWZQYzsSbQ5UdsvzgbDSwP__Uhb-ag48gGtYLnZPqO2HkQwj1tQ5it9AR4fxnh68WHjmQAf3gvfjt7Ca9-8gqgbWCI-qlbweMA1-GK2yXH_oxcwzIpGQqRHc8WW9G-ct5OTwT81ks';
-
 export default (props: IProps) => {
-  const {
-    env = 'tb1',
-    token = TOKEN,
-    processDefinitionId = 'po_receipt_01:11:266c2c6a-3b27-11ed-a00c-d6e149b04ae4',
-    processInstanceId = '4194fe2a-3b27-11ed-8f53-1e6f90fe6f04',
-  } = props;
+  const { env = 'tb1', token, processDefinitionId, processInstanceId } = props;
 
   const [list, setList] = useState<ListItem[]>([]);
   const [users, setUsers] = useState<User[]>([]);
@@ -90,9 +81,9 @@ export default (props: IProps) => {
       console.error(err);
     });
 
-    setList((ret?.data || []).map((item) => ({ ...item, isCurrentUser: Math.random() > 0.5 })));
+    setList(ret?.data || []);
 
-    // handleNext();
+    handleNext();
   };
 
   const handleChange = (content: string) => {
@@ -159,6 +150,7 @@ export default (props: IProps) => {
   };
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const hide = message.loading('loading...');
     const file = e.target?.files?.[0];
 
     if (!file) return;
@@ -168,7 +160,8 @@ export default (props: IProps) => {
     const { url, fileName } = ret;
 
     const chatType = file.type.startsWith('image') ? 2 : 3;
-    handleSend(url, chatType, fileName);
+    await handleSend(url, chatType, fileName);
+    hide();
   };
 
   const getMentionUsers = () => {
