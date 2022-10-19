@@ -13,6 +13,7 @@ export interface Item {
   processInstanceTitle: string;
   onlineTable: {
     ticket_type: string;
+    ticketTypeName: string;
   }[];
   status?: string;
   processInstanceId: string;
@@ -60,7 +61,7 @@ export default (props: IProps) => {
       <div className="erp-todo-item">
         <span className="erp-todo-item__header">Ticket Type</span>
         <span className="erp-todo-item__content">
-          {data?.onlineTable?.[0]?.ticket_type || '--'}
+          {data?.onlineTable?.[0]?.ticketTypeName || '--'}
         </span>
       </div>
 
