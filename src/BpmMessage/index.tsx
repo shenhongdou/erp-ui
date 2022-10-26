@@ -67,6 +67,7 @@ export default (props: IProps) => {
   };
 
   const getList = async () => {
+    timer && clearTimeout(timer);
     const ret = await fetchList(env, token, {
       chatLogDtoFilter: {
         processDefinitionId,
@@ -88,6 +89,7 @@ export default (props: IProps) => {
   };
 
   const handleChange = (content: string) => {
+    timer && clearTimeout(timer);
     setContent(content);
   };
 
@@ -177,7 +179,7 @@ export default (props: IProps) => {
       return;
     }
 
-    const ret = doSendMessage(env, token, {
+    const ret = await doSendMessage(env, token, {
       chatLogDto: {
         chatContent: content,
         chatContentName: fileName,
@@ -231,13 +233,15 @@ export default (props: IProps) => {
       <div className="erp-bpm-message__editor">
         <Mentions
           autoSize={{ minRows: 2, maxRows: 8 }}
-          placeholder="You can use @ to ref user here"
+          // placeholder="You can use @ to ref user here"
           value={content}
           loading={loading}
-          onSearch={handleSearch}
+          prefix="#!#!$x!e#!#!$x!e#!#!$x!e#!#!$x!e#!#!$x!e#!#!$x!e"
+          // onSearch={handleSearch}
           onChange={handleChange}
-          onSelect={handleSelect}
+          // onSelect={handleSelect}
           onKeyDown={handlKeyDown}
+          onBlur={getList}
         >
           {users?.map((item) => (
             <Mentions.Option value={item.showName} key={item.loginName}>
