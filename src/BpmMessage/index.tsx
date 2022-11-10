@@ -68,10 +68,14 @@ export default (props: IProps) => {
 
   const getList = async () => {
     timer && clearTimeout(timer);
+
+    const zoneId = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
     const ret = await fetchList(env, token, {
       chatLogDtoFilter: {
         processDefinitionId,
         processInstanceId,
+        zoneId,
       },
       orderParam: [
         {
