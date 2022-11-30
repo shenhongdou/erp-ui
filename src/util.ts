@@ -57,5 +57,9 @@ export const getFileLogo = (fileType: string) => {
 export const getAvatarTxt = (name: string) => {
   const [firstName, secondName] = name?.split('.') || [];
 
-  return `${firstName[0].toLocaleUpperCase()}${secondName[0].toLocaleUpperCase()}`;
+  if (!secondName) {
+    return firstName?.[0]?.toLocaleUpperCase();
+  }
+
+  return `${firstName?.[0]?.toLocaleUpperCase()}${secondName?.[0]?.toLocaleUpperCase()}`;
 };
