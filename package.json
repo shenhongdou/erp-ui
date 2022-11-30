@@ -1,7 +1,7 @@
 {
   "private": false,
   "name": "@weee-erp/erp-ui",
-  "version": "0.1.12",
+  "version": "0.1.13",
   "license": "ISC",
   "homepage": "./",
   "scripts": {
