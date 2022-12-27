@@ -28,7 +28,7 @@ interface IProps {
    * @description       环境
    *
    */
-  env: 'tb1' | 'tb2' | 'pro';
+  env: 'tb1' | 'dev' | 'pro';
   /**
    * @description       不需要Bearer
    *

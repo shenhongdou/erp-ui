@@ -1,6 +1,6 @@
 import { getApiPrefixAccordEnv, getRSApiPrefixAccordEnv } from '../util';
 
-export const fetchList = async (env: 'tb1' | 'tb2' | 'pro', token: string, params: any) => {
+export const fetchList = async (env: 'tb1' | 'dev' | 'pro', token: string, params: any) => {
   const response = await fetch(`${getApiPrefixAccordEnv(env)}/task/operator/chatLog/list`, {
     method: 'POST',
     headers: {
@@ -18,7 +18,7 @@ export const fetchList = async (env: 'tb1' | 'tb2' | 'pro', token: string, param
   return data;
 };
 
-export const fetchUsers = async (env: 'tb1' | 'tb2' | 'pro', token: string, params: any) => {
+export const fetchUsers = async (env: 'tb1' | 'dev' | 'pro', token: string, params: any) => {
   const response = await fetch(`${getApiPrefixAccordEnv(env)}/admin/upms/sysUser/list`, {
     method: 'POST',
     headers: {
@@ -37,7 +37,7 @@ export const fetchUsers = async (env: 'tb1' | 'tb2' | 'pro', token: string, para
   return data;
 };
 
-export const doSendMessage = async (env: 'tb1' | 'tb2' | 'pro', token: string, params: any) => {
+export const doSendMessage = async (env: 'tb1' | 'dev' | 'pro', token: string, params: any) => {
   const response = await fetch(`${getApiPrefixAccordEnv(env)}/task/operator/chatLog/add`, {
     method: 'POST',
     headers: {
@@ -55,7 +55,7 @@ export const doSendMessage = async (env: 'tb1' | 'tb2' | 'pro', token: string, p
   return data;
 };
 
-export const uploadFile = async (env: 'tb1' | 'tb2' | 'pro', token: string, formData: FormData) => {
+export const uploadFile = async (env: 'tb1' | 'dev' | 'pro', token: string, formData: FormData) => {
   const response = await fetch(`${getRSApiPrefixAccordEnv(env)}/resource/upload`, {
     method: 'POST',
     headers: {
