@@ -45,6 +45,11 @@ export default (props: IProps) => {
     };
 
   return (
-    <Table components={components} columns={newColumns} dataSource={dataSource} {...otherProps} />
+    <Table
+      components={components}
+      columns={newColumns as any}
+      dataSource={dataSource}
+      {...otherProps}
+    />
   );
 };

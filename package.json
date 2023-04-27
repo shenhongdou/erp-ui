@@ -1,7 +1,7 @@
 {
   "private": false,
   "name": "@weee-erp/erp-ui",
-  "version": "0.1.15",
+  "version": "0.1.16",
   "license": "ISC",
   "homepage": "./",
   "scripts": {
@@ -14,7 +14,7 @@
     "test": "umi-test",
     "test:coverage": "umi-test --coverage",
     "prepublishOnly": "npm run build",
-    "pub": "npx ./publish.js -c"
+    "pub": "npm run build && npx ./publish.js -c"
   },
   "module": "es/index.js",
   "typings": "es/index.d.ts",

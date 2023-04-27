@@ -16,7 +16,7 @@ const publish = ({ path, tag }) => {
 
   shell.exec('npm config set user.name admin');
   shell.exec(
-    'npm config set //maven.sayweee.net:8081/repository/npm-sayweee/:_authToken=NpmToken.5e425fe7-ac8d-3966-ae3b-f51c56ef4ba1',
+    'npm config set //maven.sayweee.net/repository/npm-sayweee/:_authToken=NpmToken.5e425fe7-ac8d-3966-ae3b-f51c56ef4ba1',
   );
   if (path) {
     shell.cd(path);
@@ -24,7 +24,7 @@ const publish = ({ path, tag }) => {
   shell.echo('publish start ...');
   const comd = `npm publish ${
     tag ? '--tag ' + tag : ''
-  } --registry=http://maven.sayweee.net:8081/repository/npm-sayweee/`;
+  } --registry=https://maven.sayweee.net/repository/npm-sayweee/`;
   console.log(comd);
   shell.exec(comd);
   shell.echo('publish end');

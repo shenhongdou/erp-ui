@@ -44,12 +44,16 @@ interface IProps {
    *
    */
   processInstanceId: string;
+  /**
+   * @description       时区（例如Asia/Shanghai），可以通过Intl.DateTimeFormat().resolvedOptions().timeZone获取，会根据传入的时区对message的时间进行时区转换
+   */
+  zoneId?: string;
 }
 
 let timer: number;
 
 export default (props: IProps) => {
-  const { env = 'tb1', token, processDefinitionId, processInstanceId } = props;
+  const { env = 'tb1', token, processDefinitionId, processInstanceId, zoneId: propZoneId } = props;
 
   const [list, setList] = useState<ListItem[]>([]);
   const [users, setUsers] = useState<User[]>([]);
@@ -69,7 +73,7 @@ export default (props: IProps) => {
   const getList = async () => {
     timer && clearTimeout(timer);
 
-    const zoneId = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    const zoneId = propZoneId || Intl.DateTimeFormat().resolvedOptions().timeZone;
 
     const ret = await fetchList(env, token, {
       chatLogDtoFilter: {
