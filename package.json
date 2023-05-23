@@ -33,8 +33,10 @@
     "@ant-design/icons": "^4.7.0",
     "@types/react-resizable": "^3.0.2",
     "antd": "^4.20.0",
+    "quill-image-resize-module": "^3.0.0",
     "react": "^17.0.0",
     "react-infinite-scroll-component": "^6.1.0",
+    "react-quill": "^2.0.0",
     "react-resizable": "^3.0.4"
   },
   "devDependencies": {

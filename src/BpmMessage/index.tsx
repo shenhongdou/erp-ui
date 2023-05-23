@@ -1,7 +1,8 @@
 import React, { useEffect, useState, useRef, useCallback } from 'react';
-import { Mentions, Button, message, Empty } from 'antd';
+import { Mentions, Button, message, Empty, Spin } from 'antd';
 import { PaperClipOutlined } from '@ant-design/icons';
 import type { OptionProps } from 'antd/es/mentions';
+import ReactQuill, { Quill } from 'react-quill';
 
 import BpmMessageItem, { ListItem } from '../BpmMessageItem';
 
@@ -9,6 +10,8 @@ import { fetchList, fetchUsers, doSendMessage, uploadFile } from './apis';
 import { debounce } from '../util';
 
 import './index.less';
+import 'react-quill/dist/quill.snow.css';
+import QuillEditor from './quill-editor';
 
 interface User {
   showName: string;
@@ -17,10 +20,11 @@ interface User {
   email: string;
 }
 
-enum ChatType {
+export enum ChatType {
   String = 1,
   Image,
   File,
+  HTML,
 }
 
 interface IProps {
@@ -56,13 +60,24 @@ export default (props: IProps) => {
   const { env = 'tb1', token, processDefinitionId, processInstanceId, zoneId: propZoneId } = props;
 
   const [list, setList] = useState<ListItem[]>([]);
-  const [users, setUsers] = useState<User[]>([]);
+  // const [users, setUsers] = useState<User[]>([]);
   const [content, setContent] = useState('');
-  const [loading, setLoading] = useState(false);
+  // const [loading, setLoading] = useState(false);
   const [chatMentionUsers, setchatMentionUsers] = useState<OptionProps[]>([]);
 
   const uploadRef = useRef<HTMLInputElement | null>(null);
   const listRef = useRef<HTMLDivElement | null>(null);
+
+  const handeUpload = async (file: File) => {
+    const formData = new FormData();
+    formData.append('file', file);
+
+    const ret = await uploadFile(env, token, formData).catch((err) => {
+      console.error(err);
+    });
+
+    return ret;
+  };
 
   const handleNext = () => {
     timer = setTimeout(() => {
@@ -101,63 +116,48 @@ export default (props: IProps) => {
     setContent(content);
   };
 
-  const debouncedFetchUsers = useCallback(
-    debounce(async (userName: string) => {
-      fetchUsers(env, token, {
-        orderParam: [
-          {
-            fieldName: 'createTime',
-            asc: 1,
-          },
-        ],
-        pageParam: {
-          pageNum: 1,
-          pageSize: 100,
-        },
-        sysUserDtoFilter: {
-          loginName: userName,
-        },
-      })
-        .then((data) => {
-          setUsers(data?.data?.dataList || []);
-        })
-        .finally(() => {
-          setLoading(false);
-        })
-        .catch((err) => {
-          console.error(err);
-        });
-    }),
-    [],
-  );
+  // const debouncedFetchUsers = useCallback(
+  //   debounce(async (userName: string) => {
+  //     fetchUsers(env, token, {
+  //       orderParam: [
+  //         {
+  //           fieldName: 'createTime',
+  //           asc: 1,
+  //         },
+  //       ],
+  //       pageParam: {
+  //         pageNum: 1,
+  //         pageSize: 100,
+  //       },
+  //       sysUserDtoFilter: {
+  //         loginName: userName,
+  //       },
+  //     })
+  //       .then((data) => {
+  //         setUsers(data?.data?.dataList || []);
+  //       })
+  //       .finally(() => {
+  //         setLoading(false);
+  //       })
+  //       .catch((err) => {
+  //         console.error(err);
+  //       });
+  //   }),
+  //   [],
+  // );
 
-  const handleSearch = (userName: string) => {
-    setLoading(true);
-    setUsers([]);
-    debouncedFetchUsers(userName);
-  };
+  // const handleSearch = (userName: string) => {
+  //   setLoading(true);
+  //   setUsers([]);
+  //   debouncedFetchUsers(userName);
+  // };
 
-  const handleSelect = (option: any, prefix: string) => {
-    setchatMentionUsers((users) => [...users, option]);
-  };
+  // const handleSelect = (option: any, prefix: string) => {
+  //   setchatMentionUsers((users) => [...users, option]);
+  // };
 
   const handleFileClick = () => {
     uploadRef?.current?.click();
-  };
-
-  const handeUpload = async (file: File) => {
-    const formData = new FormData();
-    formData.append('file', file);
-
-    const ret = await uploadFile(env, token, formData).catch((err) => {
-      console.error(err);
-    });
-
-    if (!ret) return;
-    return {
-      url: ret?.body?.[0].url,
-      fileName: file.name,
-    };
   };
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -170,7 +170,7 @@ export default (props: IProps) => {
     if (!ret) return;
     const { url, fileName } = ret;
 
-    const chatType = file.type.startsWith('image') ? 2 : 3;
+    const chatType = file.type.startsWith('image') ? ChatType.Image : ChatType.File;
     await handleSend(url, chatType, fileName);
     hide();
   };
@@ -182,7 +182,7 @@ export default (props: IProps) => {
   };
 
   const handleSend = async (content: string, chatType: ChatType, fileName?: string) => {
-    if (!content?.trim()) {
+    if (!content?.trim() || content === '<p><br></p>') {
       message.error('please input something first');
       return;
     }
@@ -212,13 +212,9 @@ export default (props: IProps) => {
     });
   };
 
-  const handleSendTxt = () => {
-    handleSend(content, 1);
-  };
-
   const handlKeyDown = (e: any) => {
     if (e.keyCode === 13 && e.ctrlKey) {
-      handleSend(content, 1);
+      handleSend(content, ChatType.HTML);
     }
   };
 
@@ -234,12 +230,13 @@ export default (props: IProps) => {
     <div className="erp-bpm-message">
       <div className="erp-bpm-message__list" ref={listRef}>
         {!list?.length && <Empty />}
+
         {list?.map((item) => (
           <BpmMessageItem key={item.pkid} data={item} />
         ))}
       </div>
       <div className="erp-bpm-message__editor">
-        <Mentions
+        {/* <Mentions
           autoSize={{ minRows: 2, maxRows: 8 }}
           // placeholder="You can use @ to ref user here"
           value={content}
@@ -257,13 +254,34 @@ export default (props: IProps) => {
             </Mentions.Option>
           ))}
         </Mentions>
+        */}
+
+        {/* <ReactQuill
+          theme="snow"
+          ref={reactQuillRef}
+          modules={modules}
+          value={content}
+          onChange={handleChange}
+          onKeyDown={handlKeyDown}
+          onBlur={getList}
+        /> */}
+        <QuillEditor
+          env={env}
+          token={token}
+          value={content}
+          onChange={handleChange}
+          onKeyDown={handlKeyDown}
+          onBlur={getList}
+        />
+
         <div className="erp-bpm-message__btns">
           <PaperClipOutlined className="erp-bpm-message__file" onClick={handleFileClick} />
           <Button
             type="primary"
             size="small"
             className="erp-bpm-message__send"
-            onClick={handleSendTxt}
+            // onClick={handleSendTxt}
+            onClick={() => handleSend(content, ChatType.HTML)}
           >
             Send
           </Button>

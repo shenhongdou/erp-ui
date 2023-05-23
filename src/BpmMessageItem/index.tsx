@@ -3,10 +3,10 @@ import classNames from 'classnames';
 import { Image } from 'antd';
 
 import { getFileLogo, getAvatarTxt } from '../util';
-
+import { ChatType } from '../BpmMessage';
 export interface ListItem {
   chatContent: string;
-  chatType: number;
+  chatType: ChatType;
   isCurrentUser: boolean;
   processDefinitionId: string;
   processInstanceId: string;
@@ -48,15 +48,20 @@ export default (props: IProps) => {
           <span className="erp-bpm-message-main__time">{data.recCreateTime}</span>
         </div>
 
-        {data.chatType === 1 ? (
+        {data.chatType === ChatType.String ? (
           <p className="erp-bpm-message-main__content">{data.chatContent}</p>
-        ) : data.chatType === 2 ? (
+        ) : data.chatType === ChatType.Image ? (
           <Image src={data.chatContent} />
-        ) : (
+        ) : data.chatType === ChatType.File ? (
           <a className="erp-bpm-message-main__file" href={data.chatContent} target="_blank">
             <img className="erp-bpm-message-main__img" src={getFileLogo(data.chatContent)} />
             <span className="erp-bpm-message-main__fileName">{data.chatContentName}</span>
           </a>
+        ) : (
+          <div
+            className="erp-bpm-message-main__content"
+            dangerouslySetInnerHTML={{ __html: data?.chatContent }}
+          ></div>
         )}
       </div>
     </div>

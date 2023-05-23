@@ -27,5 +27,13 @@ export default defineConfig({
       'antd',
     ],
   ],
+  chainWebpack(memo, { env, webpack, createCSSRule }) {
+    memo.plugin('provide').use(webpack.ProvidePlugin, [
+      {
+        'window.Quill': 'quill/dist/quill.js',
+        Quill: 'quill/dist/quill.js',
+      },
+    ]);
+  },
   // more config: https://d.umijs.org/config
 });
