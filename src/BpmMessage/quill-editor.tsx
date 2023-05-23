@@ -47,19 +47,17 @@ export default (props: IProps) => {
     input.click();
     input.onchange = async () => {
       const files = input?.files;
-
       if (!files?.length) return;
 
       const ret = await handeUpload(Array.from(files));
 
       if (!ret?.body?.length) return;
 
-      const quill = reactQuillRef?.current?.getEditor(); //获取到编辑器本身
+      const editor = reactQuillRef?.current?.getEditor(); //获取到编辑器本身
       ret?.body.forEach((item: any) => {
-        const cursorPosition = quill.getSelection()?.index; //获取当前光标位置
-
-        quill.insertEmbed(cursorPosition, 'image', item.url); //插入图片
-        quill.setSelection(cursorPosition + 1); //光标位置加1
+        const cursorPosition = editor.getSelection()?.index; //获取当前光标位置
+        editor.insertEmbed(cursorPosition, 'image', item.url); //插入图片
+        editor.setSelection(cursorPosition + 1); //光标位置加1
       });
     };
   };
