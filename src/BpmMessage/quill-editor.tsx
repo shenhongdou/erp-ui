@@ -103,8 +103,6 @@ export default (props: IProps) => {
   };
 
   const handleClipboardImgMatch = (node: any, delta: any) => {
-    console.log(node, 'node');
-    console.log(clipboardDataTypes, 'clipboardDataTypes');
     if (clipboardDataTypes?.includes('text/html') && !clipboardDataTypes?.includes('Files')) {
       clipboardDataTypes = [];
       return delta;
