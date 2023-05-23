@@ -1,24 +1,23 @@
-import React, { useEffect, useState, useRef, useCallback } from 'react';
-import { Mentions, Button, message, Empty, Spin } from 'antd';
+import React, { useEffect, useState, useRef } from 'react';
+import { Button, message, Empty } from 'antd';
 import { PaperClipOutlined } from '@ant-design/icons';
 import type { OptionProps } from 'antd/es/mentions';
-import ReactQuill, { Quill } from 'react-quill';
 
 import BpmMessageItem, { ListItem } from '../BpmMessageItem';
+import QuillEditor from './quill-editor';
 
-import { fetchList, fetchUsers, doSendMessage, uploadFile } from './apis';
-import { debounce } from '../util';
+import { fetchList, doSendMessage, uploadFile } from './apis';
+// import { debounce } from '../util';
 
 import './index.less';
 import 'react-quill/dist/quill.snow.css';
-import QuillEditor from './quill-editor';
 
-interface User {
-  showName: string;
-  loginName: string;
-  userId: string;
-  email: string;
-}
+// interface User {
+//   showName: string;
+//   loginName: string;
+//   userId: string;
+//   email: string;
+// }
 
 export enum ChatType {
   String = 1,
@@ -213,9 +212,8 @@ export default (props: IProps) => {
   };
 
   const handlKeyDown = (e: any) => {
-    if (e.keyCode === 13 && e.ctrlKey) {
-      handleSend(content, ChatType.HTML);
-    }
+    if (e.keyCode !== 13 || !e.ctrlKey) return;
+    handleSend(content, ChatType.HTML);
   };
 
   useEffect(() => {
@@ -280,7 +278,6 @@ export default (props: IProps) => {
             type="primary"
             size="small"
             className="erp-bpm-message__send"
-            // onClick={handleSendTxt}
             onClick={() => handleSend(content, ChatType.HTML)}
           >
             Send

@@ -1,16 +1,13 @@
 import React, { useMemo, useRef, useEffect } from 'react';
 import ReactQuill, { Quill } from 'react-quill';
 import { message } from 'antd';
-import ImageResize from 'quill-image-resize-module';
 
 import { uploadFile } from './apis';
 
 import 'react-quill/dist/quill.snow.css';
 
-Quill.register('modules/imageResize', ImageResize);
-
 let clipboardDataTypes: string[] = [];
-console.log(ImageResize, 'ImageResize');
+
 interface IProps {
   token: string;
   env: 'tb1' | 'dev' | 'pro';
@@ -77,48 +74,56 @@ export default (props: IProps) => {
         handlers: {
           image: imageHandler,
         },
-        ImageResize: {},
       },
     }),
     [],
   );
 
+  const handlePaste = (e: any) => {
+    const editor = reactQuillRef?.current?.getEditor();
+    clipboardDataTypes = [];
+
+    const clipboardData = e.clipboardData;
+
+    clipboardDataTypes = clipboardData?.types?.length ? [...clipboardData.types] : [];
+
+    const files = Array.from(clipboardData?.files as FileList)?.filter((item) =>
+      item.type.startsWith('image'),
+    );
+
+    if (!files?.length) return;
+
+    handeUpload(files).then((res) => {
+      res?.body?.forEach((item: any) => {
+        const range = editor.getSelection(true);
+        editor.insertEmbed(range.index, 'image', item?.url);
+        editor.setSelection(range?.index + 1); //光标位置加1
+      });
+    });
+  };
+
+  const handleClipboardImgMatch = (node: any, delta: any) => {
+    console.log(node, 'node');
+    console.log(clipboardDataTypes, 'clipboardDataTypes');
+    if (clipboardDataTypes?.includes('text/html') && !clipboardDataTypes?.includes('Files')) {
+      clipboardDataTypes = [];
+      return delta;
+    }
+
+    const Delta = Quill.import('delta'); // 忽略base64插入操作
+    clipboardDataTypes = [];
+    return new Delta().insert('');
+  };
+
   useEffect(() => {
     const editor = reactQuillRef?.current?.getEditor();
 
-    editor?.root?.addEventListener('paste', (e: any) => {
-      clipboardDataTypes = [];
+    editor?.root?.addEventListener('paste', handlePaste);
+    editor.clipboard.addMatcher('IMG', handleClipboardImgMatch);
 
-      const clipboardData = e.clipboardData;
-
-      clipboardDataTypes = clipboardData?.types?.length ? [...clipboardData.types] : [];
-
-      const files = Array.from(clipboardData?.files as FileList)?.filter((item) =>
-        item.type.startsWith('image'),
-      );
-
-      if (!files?.length) return;
-
-      handeUpload(files).then((res) => {
-        res?.body?.forEach((item: any) => {
-          const range = editor.getSelection(true);
-          editor.insertEmbed(range.index, 'image', item?.url);
-          editor.setSelection(range?.index + 1); //光标位置加1
-        });
-      });
-    });
-
-    editor.clipboard.addMatcher('IMG', (node: any, delta: any) => {
-      if (clipboardDataTypes?.includes('text/html') && !clipboardDataTypes?.includes('Files')) {
-        clipboardDataTypes = [];
-        return delta;
-      }
-
-      const Delta = Quill.import('delta'); // 忽略base64插入操作
-
-      clipboardDataTypes = [];
-      return new Delta().insert('');
-    });
+    return () => {
+      editor?.root?.removeEventListener('paste', handlePaste);
+    };
   }, []);
 
   return <ReactQuill theme="snow" ref={reactQuillRef} modules={modules} {...restProps} />;
