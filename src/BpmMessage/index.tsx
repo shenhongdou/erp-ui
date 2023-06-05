@@ -61,7 +61,7 @@ export default (props: IProps) => {
   const [list, setList] = useState<ListItem[]>([]);
   // const [users, setUsers] = useState<User[]>([]);
   const [content, setContent] = useState('');
-  // const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [chatMentionUsers, setchatMentionUsers] = useState<OptionProps[]>([]);
 
   const uploadRef = useRef<HTMLInputElement | null>(null);
@@ -186,6 +186,8 @@ export default (props: IProps) => {
       return;
     }
 
+    setLoading(true);
+
     const ret = await doSendMessage(env, token, {
       chatLogDto: {
         chatContent: content,
@@ -198,6 +200,9 @@ export default (props: IProps) => {
     }).catch((err) => {
       console.error(err);
     });
+
+    setLoading(false);
+
     if (!ret) return;
 
     setContent('');
@@ -217,12 +222,13 @@ export default (props: IProps) => {
   };
 
   useEffect(() => {
+    if (!processInstanceId) return;
     getList();
 
     return () => {
       clearTimeout(timer);
     };
-  }, []);
+  }, [processInstanceId]);
 
   return (
     <div className="erp-bpm-message">
@@ -278,6 +284,7 @@ export default (props: IProps) => {
             type="primary"
             size="small"
             className="erp-bpm-message__send"
+            loading={loading}
             onClick={() => handleSend(content, ChatType.HTML)}
           >
             Send
