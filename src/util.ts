@@ -1,10 +1,14 @@
 // 根据env获取api
-export const getApiPrefixAccordEnv = (env: 'tb1' | 'dev' | 'pro') => {
+export const getApiPrefixAccordEnv = (
+  env: 'tb1' | 'dev' | 'pro',
+  prefix: string | false = 'central/bpm',
+) => {
   switch (env) {
     case 'tb1':
-      return 'https://api.tb1.sayweee.net/central/bpm';
     case 'dev':
-      return 'https://api.dev.sayweee.net/central/bpm';
+      if (!prefix) return `https://api.${env}.sayweee.net`;
+
+      return `https://api.${env}.sayweee.net/${prefix}`;
     case 'pro':
       return 'https://api.sayweee.net/central/bpm';
   }
@@ -62,4 +66,11 @@ export const getAvatarTxt = (name: string) => {
   }
 
   return `${firstName?.[0]?.toLocaleUpperCase()}${secondName?.[0]?.toLocaleUpperCase()}`;
+};
+
+export const getFileSubType = (fileType: string) => {
+  if (fileType.startsWith('application') || fileType === 'text/csv') return 'doc';
+
+  if (fileType.startsWith('image')) return 'image';
+  // if (fileType.startsWith('audio')) return 'audio';
 };

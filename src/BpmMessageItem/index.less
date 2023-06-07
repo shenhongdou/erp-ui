@@ -20,17 +20,21 @@
     margin-left: 10px;
 
     .erp-bpm-message-main__header {
-      height: 36px;
+      // line-height: 36px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      // height: 36px;
       margin-bottom: 0;
-      line-height: 36px;
     }
 
     .erp-bpm-message-main__user {
+      margin-right: 10px;
       font-weight: bold;
+      line-height: 36px;
     }
 
     .erp-bpm-message-main__time {
-      margin-left: 10px;
       font-size: 12px;
     }
 
@@ -90,10 +94,17 @@
     .erp-bpm-message-main__header {
       display: flex;
       flex-direction: row-reverse;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .erp-bpm-message-main__user {
+      margin-right: 0;
+      margin-left: 10px;
     }
 
     .erp-bpm-message-main__time {
-      margin-right: 10px;
+      // margin-right: 10px;
       margin-left: 0;
     }
 

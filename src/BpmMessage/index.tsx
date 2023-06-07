@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { Button, message, Empty } from 'antd';
+import { Button, message, Empty, Tooltip } from 'antd';
 import { PaperClipOutlined } from '@ant-design/icons';
 import type { OptionProps } from 'antd/es/mentions';
 
@@ -7,7 +7,7 @@ import BpmMessageItem, { ListItem } from '../BpmMessageItem';
 import QuillEditor from './quill-editor';
 
 import { fetchList, doSendMessage, uploadFile } from './apis';
-// import { debounce } from '../util';
+import { getFileSubType } from '../util';
 
 import './index.less';
 import 'react-quill/dist/quill.snow.css';
@@ -68,14 +68,24 @@ export default (props: IProps) => {
   const listRef = useRef<HTMLDivElement | null>(null);
 
   const handeUpload = async (file: File) => {
+    // const subType = getFileSubType(file.type);
+
+    // if (!subType) {
+    //   message.error('This file type is not supported.');
+    //   return;
+    // }
+
     const formData = new FormData();
     formData.append('file', file);
-
+    // formData.append('bizType', 'bpm');
+    // formData.append('subType', subType);
+    const hide = message.loading('loading...');
     const ret = await uploadFile(env, token, formData).catch((err) => {
       console.error(err);
     });
+    hide();
 
-    return ret;
+    return ret?.body?.[0];
   };
 
   const handleNext = () => {
@@ -160,18 +170,19 @@ export default (props: IProps) => {
   };
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const hide = message.loading('loading...');
     const file = e.target?.files?.[0];
 
     if (!file) return;
 
     const ret = await handeUpload(file).catch(() => {});
+    console.log(ret, 'ret');
     if (!ret) return;
-    const { url, fileName } = ret;
+
+    const { url, originalName } = ret;
 
     const chatType = file.type.startsWith('image') ? ChatType.Image : ChatType.File;
-    await handleSend(url, chatType, fileName);
-    hide();
+
+    await handleSend(url, chatType, originalName);
   };
 
   const getMentionUsers = () => {
@@ -186,7 +197,9 @@ export default (props: IProps) => {
       return;
     }
 
-    setLoading(true);
+    const isSendFile = !!fileName;
+
+    !isSendFile && setLoading(true);
 
     const ret = await doSendMessage(env, token, {
       chatLogDto: {
@@ -201,7 +214,7 @@ export default (props: IProps) => {
       console.error(err);
     });
 
-    setLoading(false);
+    !isSendFile && setLoading(false);
 
     if (!ret) return;
 
@@ -279,7 +292,9 @@ export default (props: IProps) => {
         />
 
         <div className="erp-bpm-message__btns">
-          <PaperClipOutlined className="erp-bpm-message__file" onClick={handleFileClick} />
+          <Tooltip title="Upload Attachment">
+            <PaperClipOutlined className="erp-bpm-message__file" onClick={handleFileClick} />
+          </Tooltip>
           <Button
             type="primary"
             size="small"
@@ -289,7 +304,15 @@ export default (props: IProps) => {
           >
             Send
           </Button>
-          <input hidden type="file" ref={uploadRef} onChange={handleFileChange} />
+          <input
+            hidden
+            type="file"
+            ref={uploadRef}
+            onChange={handleFileChange}
+            onClick={(e) => {
+              (e.target as HTMLInputElement).value = '';
+            }}
+          />
         </div>
       </div>
     </div>
