@@ -53,7 +53,7 @@ interface IProps {
   zoneId?: string;
 }
 
-let timer: number;
+let timer: any;
 
 export default (props: IProps) => {
   const { env = 'tb1', token, processDefinitionId, processInstanceId, zoneId: propZoneId } = props;
@@ -248,7 +248,7 @@ export default (props: IProps) => {
         {!list?.length && <Empty />}
 
         {list?.map((item) => (
-          <BpmMessageItem key={item.pkid} data={item} />
+          <BpmMessageItem key={item.pkid} data={item} token={token} env={env} />
         ))}
       </div>
       <div className="erp-bpm-message__editor">

@@ -1,4 +1,4 @@
-const FileSaver = require('file-saver');
+import { saveAs } from 'file-saver';
 // 根据env获取api
 export const getApiPrefixAccordEnv = (
   env: 'tb1' | 'dev' | 'pro',
@@ -28,7 +28,7 @@ export const getRSApiPrefixAccordEnv = (env: 'tb1' | 'dev' | 'pro') => {
 };
 
 export const debounce = (fn: (...args: any[]) => void, delay = 800) => {
-  let timer: number;
+  let timer: any;
   return (...args: any[]) => {
     clearTimeout(timer);
     timer = setTimeout(() => {
@@ -73,13 +73,13 @@ export const getFileSubType = (fileType: string) => {
   if (fileType.startsWith('video')) return 'video';
 
   if (fileType.startsWith('image')) return 'image';
-  return "doc";
+  return 'doc';
   // if (fileType.startsWith('audio')) return 'audio';
 };
 
 export const downloadFile = async (url: string, filename: string) => {
   const blob = await fetch(url, { cache: 'no-store' }).then((res) => res.blob());
-  FileSaver.saveAs(blob, filename);
+  saveAs(blob, filename);
 };
 
 export const downloadByTagA = (url: string, filename: string) => {

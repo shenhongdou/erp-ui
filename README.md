@@ -13,3 +13,4 @@ yarn deploy
 3. 0.1.20 bpm message 根据 processInstanceId 更新数据
 4. 0.1.21 bpm message send 按钮加 loading
 5. 0.1.22 bpm message 修复上传附件提示错误信息问题
+6. 0.1.23 bpm message 附件上传接口替换&私密文件下载优化
