@@ -56,13 +56,11 @@ export const doSendMessage = async (env: 'tb1' | 'dev' | 'pro', token: string, p
 };
 
 export const uploadFile = async (env: 'tb1' | 'dev' | 'pro', token: string, formData: FormData) => {
-  const response = await fetch(`${getRSApiPrefixAccordEnv(env)}/resource/upload`, {
+  formData.append("bizType ","bpm");
+  const response = await fetch(`${getRSApiPrefixAccordEnv(env)}/resource/v2/upload/directly`, {
     method: 'POST',
     headers: {
-      Authorization: 'Bearer ' + token,
-      channel: 'central',
-      type: 'cs',
-      local: 'cs',
+      Authorization: 'Bearer ' + token
     },
     body: formData,
   }).catch((err) => {

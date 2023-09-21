@@ -25,7 +25,7 @@ export default (props: IProps) => {
     files?.forEach((file) => {
       formData.append('file', file);
     });
-
+    formData.append("subType","image");
     const ret = await uploadFile(env, token, formData).catch((err) => {
       console.error(err);
     });
@@ -48,10 +48,10 @@ export default (props: IProps) => {
 
       const ret = await handeUpload(Array.from(files));
 
-      if (!ret?.body?.length) return;
+      if (!ret?.object?.length) return;
 
       const editor = reactQuillRef?.current?.getEditor(); //获取到编辑器本身
-      ret?.body.forEach((item: any) => {
+      ret?.object.forEach((item: any) => {
         const cursorPosition = editor.getSelection()?.index; //获取当前光标位置
         editor.insertEmbed(cursorPosition, 'image', item.url); //插入图片
         editor.setSelection(cursorPosition + 1); //光标位置加1
@@ -94,7 +94,7 @@ export default (props: IProps) => {
     if (!files?.length) return;
 
     handeUpload(files).then((res) => {
-      res?.body?.forEach((item: any) => {
+      res?.object?.forEach((item: any) => {
         const range = editor.getSelection(true);
         editor.insertEmbed(range.index, 'image', item?.url);
         editor.setSelection(range?.index + 1); //光标位置加1

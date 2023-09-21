@@ -1,8 +1,7 @@
 import React from 'react';
 import classNames from 'classnames';
 import { Image } from 'antd';
-
-import { getFileLogo, getAvatarTxt } from '../util';
+import {getFileLogo, getAvatarTxt} from '../util';
 import { ChatType } from '../BpmMessage';
 export interface ListItem {
   chatContent: string;
@@ -26,6 +25,8 @@ interface IProps {
 import './index.less';
 
 const defaultAvatar = 'https://www.sayweee.com/css/img/avatar_unknown.png';
+
+import useFile from "./useFile";
 
 export default (props: IProps) => {
   const { data } = props;
@@ -53,7 +54,7 @@ export default (props: IProps) => {
         ) : data.chatType === ChatType.Image ? (
           <Image src={data.chatContent} />
         ) : data.chatType === ChatType.File ? (
-          <a className="erp-bpm-message-main__file" href={data.chatContent} target="_blank">
+          <a className="erp-bpm-message-main__file" onClick={()=>useFile().download(data.chatContent,data.chatContentName)} target="_blank">
             <img className="erp-bpm-message-main__img" src={getFileLogo(data.chatContent)} />
             <span className="erp-bpm-message-main__fileName">{data.chatContentName}</span>
           </a>

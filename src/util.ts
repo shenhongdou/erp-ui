@@ -1,3 +1,4 @@
+const FileSaver = require('file-saver');
 // 根据env获取api
 export const getApiPrefixAccordEnv = (
   env: 'tb1' | 'dev' | 'pro',
@@ -69,8 +70,24 @@ export const getAvatarTxt = (name: string) => {
 };
 
 export const getFileSubType = (fileType: string) => {
-  if (fileType.startsWith('application') || fileType === 'text/csv') return 'doc';
+  if (fileType.startsWith('video')) return 'video';
 
   if (fileType.startsWith('image')) return 'image';
+  return "doc";
   // if (fileType.startsWith('audio')) return 'audio';
+};
+
+export const downloadFile = async (url: string, filename: string) => {
+  const blob = await fetch(url, { cache: 'no-store' }).then((res) => res.blob());
+  FileSaver.saveAs(blob, filename);
+};
+
+export const downloadByTagA = (url: string, filename: string) => {
+  const link = document.createElement('a');
+  link.style.display = 'none';
+  link.href = url;
+  link.setAttribute('download', filename);
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
 };

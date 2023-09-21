@@ -68,24 +68,23 @@ export default (props: IProps) => {
   const listRef = useRef<HTMLDivElement | null>(null);
 
   const handeUpload = async (file: File) => {
-    // const subType = getFileSubType(file.type);
+    const subType = getFileSubType(file.type);
 
-    // if (!subType) {
-    //   message.error('This file type is not supported.');
-    //   return;
-    // }
+    if (!subType) {
+      message.error('This file type is not supported.');
+      return;
+    }
 
     const formData = new FormData();
     formData.append('file', file);
-    // formData.append('bizType', 'bpm');
-    // formData.append('subType', subType);
+    formData.append('subType', subType);
     const hide = message.loading('loading...');
     const ret = await uploadFile(env, token, formData).catch((err) => {
       console.error(err);
     });
     hide();
 
-    return ret?.body?.[0];
+    return ret?.object?.[0];
   };
 
   const handleNext = () => {
@@ -178,11 +177,11 @@ export default (props: IProps) => {
     console.log(ret, 'ret');
     if (!ret) return;
 
-    const { url, originalName } = ret;
+    const { url, filename } = ret;
 
     const chatType = file.type.startsWith('image') ? ChatType.Image : ChatType.File;
 
-    await handleSend(url, chatType, originalName);
+    await handleSend(url, chatType, filename);
   };
 
   const getMentionUsers = () => {
