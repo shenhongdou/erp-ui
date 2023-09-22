@@ -76,6 +76,8 @@ export default (props: IProps) => {
     }
 
     const formData = new FormData();
+    formData.append('fileName ', file.name.split(/[\t\r\f\n\s]*/g).join(''));
+    formData.append('overwrite', 'true');
     formData.append('file', file);
     formData.append('subType', subType);
     const hide = message.loading('loading...');
