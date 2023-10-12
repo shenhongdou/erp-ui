@@ -5,6 +5,8 @@ import { restrictToVerticalAxis } from '@dnd-kit/modifiers';
 import { SortableContext, arrayMove, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { Table } from 'antd';
 import type { ColumnType } from 'antd/es/table';
+import ProTable from '@ant-design/pro-table';
+import type { ProColumns } from '@ant-design/pro-table';
 
 import Row from './row';
 
@@ -13,10 +15,11 @@ interface IProps<T = any> {
   columns: ColumnType<T>[];
   dataSource: T[];
   onDrop: (active: any, over: any, isDragUp: boolean) => void;
+  isPro?: boolean;
 }
 
 const DragSortTable = <DataType extends Record<string, any>>(props: IProps<DataType>) => {
-  const { rowKey, columns, dataSource, onDrop, ...resetTableProps } = props;
+  const { rowKey, columns, dataSource, onDrop, isPro = false, ...resetTableProps } = props;
 
   const [data, setData] = useState<DataType[]>([]);
 
@@ -52,17 +55,31 @@ const DragSortTable = <DataType extends Record<string, any>>(props: IProps<DataT
   return (
     <DndContext sensors={sensors} modifiers={[restrictToVerticalAxis]} onDragEnd={onDragEnd}>
       <SortableContext items={data?.map((i) => i?.[rowKey])} strategy={verticalListSortingStrategy}>
-        <Table
-          rowKey={rowKey}
-          components={{
-            body: {
-              row: Row,
-            },
-          }}
-          columns={columns}
-          dataSource={data}
-          {...resetTableProps}
-        />
+        {isPro ? (
+          <ProTable
+            rowKey={rowKey}
+            components={{
+              body: {
+                row: Row,
+              },
+            }}
+            columns={columns as ProColumns<DataType, 'text'>[]}
+            dataSource={data}
+            {...resetTableProps}
+          ></ProTable>
+        ) : (
+          <Table
+            rowKey={rowKey}
+            components={{
+              body: {
+                row: Row,
+              },
+            }}
+            columns={columns}
+            dataSource={data}
+            {...resetTableProps}
+          />
+        )}
       </SortableContext>
     </DndContext>
   );

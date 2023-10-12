@@ -69,7 +69,17 @@ export default () => {
     console.log(active, over, isDragUp, 'active, over, isDragUp');
   };
   return (
-    <DragSortTable rowKey="key" columns={columns} dataSource={dataSource} onDrop={handleDrop} />
+    <>
+      <DragSortTable
+        rowKey="key"
+        isPro
+        columns={columns}
+        dataSource={dataSource}
+        onDrop={handleDrop}
+      />
+
+      <DragSortTable rowKey="key" columns={columns} dataSource={dataSource} onDrop={handleDrop} />
+    </>
   );
 };
 ```
