@@ -5,3 +5,5 @@ export { default as ResizableColumnTable } from './ResizableColumnTable';
 export { default as Layout } from './Layout';
 export { default as BpmTodoList } from './BpmTodoList';
 export { default as BpmMessage } from './BpmMessage';
+
+export { default as WidthResizableTable } from './WidthResizableTable';

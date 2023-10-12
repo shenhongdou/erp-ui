@@ -16,7 +16,21 @@ const ResizeableTitle = (props: IProps) => {
   }
 
   return (
-    <Resizable width={width} height={0} onResize={onResize} resizeHandles={['e']}>
+    <Resizable
+      width={width}
+      height={0}
+      onResize={onResize}
+      // resizeHandles={['e']}
+      handle={
+        <span
+          className="react-resizable-handle"
+          onClick={(e) => {
+            e.stopPropagation();
+          }}
+        />
+      }
+      draggableOpts={{ enableUserSelectHack: false }}
+    >
       <th {...restProps} />
     </Resizable>
   );
