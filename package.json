@@ -14,7 +14,7 @@
     "test": "umi-test",
     "test:coverage": "umi-test --coverage",
     "prepublishOnly": "npm run build",
-    "pub": "npx ./publish.js -c"
+    "pub": "npm run build && node ./publish.js -c"
   },
   "module": "es/index.js",
   "typings": "es/index.d.ts",
