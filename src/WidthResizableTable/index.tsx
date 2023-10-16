@@ -1,5 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Table } from 'antd';
+import { ColumnsType } from 'antd/es/table';
+
 import Cell from './Cell';
 
 import './index.less';
@@ -13,7 +15,8 @@ import './index.less';
  *  3.3 需要限制缩小的最小宽度，最大宽度需不需要限制？
  */
 
-interface IProps {
+interface IProps<T> {
+  columns: ColumnsType<T>[];
   isPro?: boolean;
 }
 let xStart = 0;
@@ -21,15 +24,16 @@ let i = -1;
 let off = false;
 let curWidth = 0;
 
-export default (props: IProps) => {
+export default <T extends Record<string, any>>(props: IProps<T>) => {
   const { isPro, columns: propColumns, ...resetProps } = props;
 
   const [handlePos, setHandlePos] = useState<{ left: number; top: number } | null>(null);
   const [columns, setColumns] = useState<any[]>([]);
-  // const [height, setHeight] = useState(0);
   const [tableSize, setTableSize] = useState<{ width: number; height: number }>();
 
   const ref = useRef<HTMLDivElement>(null);
+
+  const width = useMemo(() => columns?.reduce((acc, cur) => acc + (cur.width || 0), 0), [columns]);
 
   const components = {
     header: {
@@ -37,39 +41,37 @@ export default (props: IProps) => {
     },
   };
 
-  const handleCellMouseMove = (e, index) => {
-    const { clientX, movementX, pageX, screenX } = e;
+  const handleCellMouseMove = (e: React.MouseEvent<HTMLDivElement>, index: number) => {
+    const { clientX } = e;
 
-    const { right, top, width, height } = e.target.getBoundingClientRect();
+    const { right, top, width } = (e.target as HTMLElement).getBoundingClientRect();
 
     if (off) return;
 
     if (right - clientX <= 10) {
-      setHandlePos({ left: right - 10, top });
-      // setHeight(height);
+      setHandlePos({ left: right - 5, top });
       i = index;
       curWidth = width;
     } else {
       setHandlePos(null);
       curWidth = 0;
-      // setHeight(0);
     }
   };
 
-  const handleMouseDown = (e) => {
+  const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
     off = true;
     xStart = e.clientX;
     document.onmousemove = (e) => {
-      const { clientX, movementX, pageX, screenX } = e;
+      const { clientX } = e;
 
       setHandlePos((pos) => ({
-        ...pos,
+        ...(pos || {}),
         left: clientX,
       }));
     };
   };
 
-  const handleMouseUp = (e) => {
+  const handleMouseUp = (e: React.MouseEvent<HTMLDivElement>) => {
     setHandlePos(null);
     document.onmousemove = null;
     const dis = e.clientX - xStart;
@@ -81,11 +83,18 @@ export default (props: IProps) => {
     off = false;
   };
 
+  const handleMouseLeave = () => {
+    console.log(handlePos, 'handlePos');
+    // if (handlePos) {
+    //   setHandlePos(null);
+    // }
+  };
+
   useEffect(() => {
     const cols = propColumns?.map((col, index) => ({
       ...col,
-      onHeaderCell: (column: any) => ({
-        onMouseMove: (e) => handleCellMouseMove(e, index),
+      onHeaderCell: () => ({
+        onMouseMove: (e: React.MouseEvent<any>) => handleCellMouseMove(e, index),
       }),
     }));
 
@@ -99,8 +108,7 @@ export default (props: IProps) => {
     const observer = new MutationObserver((mutationsList) => {
       for (let mutation of mutationsList) {
         if (mutation.type === 'attributes' && mutation.attributeName === 'style') {
-          // console.log('The ' + mutation.attributeName + ' attribute was modified.', mutation);
-          const { width, height } = mutation?.target?.getBoundingClientRect();
+          const { width, height } = (mutation?.target as HTMLTableElement)?.getBoundingClientRect();
           setTableSize({ width, height });
         }
       }
@@ -113,28 +121,20 @@ export default (props: IProps) => {
     };
   }, []);
 
-  const width = useMemo(() => {
-    let w = 0;
-    for (let i = 0; i < columns?.length; i++) {
-      w += columns[i]?.width || 0;
-    }
-
-    return w;
-  }, [columns]);
-
   return (
     <div className="erp-table_container" ref={ref}>
       <Table
         {...resetProps}
-        components={components}
+        // components={components}
         columns={columns}
-        scroll={{ x: Math.max(width, tableSize?.width) }}
+        scroll={{ x: Math.max(width, tableSize?.width || 0) }}
       ></Table>
       <div
         className="erp-table_handle"
         style={{ left: handlePos?.left, top: handlePos?.top, height: tableSize?.height }}
         onMouseDown={handleMouseDown}
         onMouseUp={handleMouseUp}
+        onMouseLeave={handleMouseLeave}
       ></div>
     </div>
   );
