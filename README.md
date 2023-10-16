@@ -14,3 +14,4 @@ yarn deploy
 4. 0.1.21 bpm message send 按钮加 loading
 5. 0.1.22 bpm message 修复上传附件提示错误信息问题
 6. 0.1.23 bpm message 附件上传接口替换&私密文件下载优化
+7. 0.1.24 bpm message 支持配置是否固定住编辑器不跟随滚动条滚动，即滚动区域是整个组件还是 List 部分。

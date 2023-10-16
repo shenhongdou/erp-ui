@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import { Button, message, Empty, Tooltip } from 'antd';
 import { PaperClipOutlined } from '@ant-design/icons';
 import type { OptionProps } from 'antd/es/mentions';
+import classNames from 'classnames';
 
 import BpmMessageItem, { ListItem } from '../BpmMessageItem';
 import QuillEditor from './quill-editor';
@@ -51,12 +52,25 @@ interface IProps {
    * @description       时区（例如Asia/Shanghai），可以通过Intl.DateTimeFormat().resolvedOptions().timeZone获取，会根据传入的时区对message的时间进行时区转换
    */
   zoneId?: string;
+
+  /**
+   * @description 是否固定编辑器
+   * @default false
+   */
+  fixEditor?: boolean;
 }
 
 let timer: any;
 
 export default (props: IProps) => {
-  const { env = 'tb1', token, processDefinitionId, processInstanceId, zoneId: propZoneId } = props;
+  const {
+    env = 'tb1',
+    token,
+    processDefinitionId,
+    processInstanceId,
+    zoneId: propZoneId,
+    fixEditor = false,
+  } = props;
 
   const [list, setList] = useState<ListItem[]>([]);
   // const [users, setUsers] = useState<User[]>([]);
@@ -246,7 +260,10 @@ export default (props: IProps) => {
 
   return (
     <div className="erp-bpm-message">
-      <div className="erp-bpm-message__list" ref={listRef}>
+      <div
+        className={classNames(['erp-bpm-message__list', { 'erp-bpm-message__fix': fixEditor }])}
+        ref={listRef}
+      >
         {!list?.length && <Empty />}
 
         {list?.map((item) => (
