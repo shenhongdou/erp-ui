@@ -26,7 +26,7 @@ export default (props: IProps) => {
 
   const [handlePos, setHandlePos] = useState<{ left: number; top: number } | null>(null);
   const [columns, setColumns] = useState<any[]>([]);
-  const [height, setHeight] = useState(0);
+  // const [height, setHeight] = useState(0);
   const [tableSize, setTableSize] = useState<{ width: number; height: number }>();
 
   const ref = useRef<HTMLDivElement>(null);
@@ -46,13 +46,13 @@ export default (props: IProps) => {
 
     if (right - clientX <= 10) {
       setHandlePos({ left: right - 10, top });
-      setHeight(height);
+      // setHeight(height);
       i = index;
       curWidth = width;
     } else {
       setHandlePos(null);
       curWidth = 0;
-      setHeight(0);
+      // setHeight(0);
     }
   };
 
@@ -99,7 +99,7 @@ export default (props: IProps) => {
     const observer = new MutationObserver((mutationsList) => {
       for (let mutation of mutationsList) {
         if (mutation.type === 'attributes' && mutation.attributeName === 'style') {
-          console.log('The ' + mutation.attributeName + ' attribute was modified.', mutation);
+          // console.log('The ' + mutation.attributeName + ' attribute was modified.', mutation);
           const { width, height } = mutation?.target?.getBoundingClientRect();
           setTableSize({ width, height });
         }
