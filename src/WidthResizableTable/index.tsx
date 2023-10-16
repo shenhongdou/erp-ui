@@ -1,8 +1,8 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Table } from 'antd';
-import { ColumnsType } from 'antd/es/table';
-
-import Cell from './Cell';
+import { ColumnType } from 'antd/es/table';
+import ProTable from '@ant-design/pro-table';
+import type { ProColumns } from '@ant-design/pro-table';
 
 import './index.less';
 
@@ -16,82 +16,86 @@ import './index.less';
  */
 
 interface IProps<T> {
-  columns: ColumnsType<T>[];
+  columns: ColumnType<T>[];
   isPro?: boolean;
+  scroll?: {
+    x?: number | true | string;
+    y?: number | string;
+  };
 }
-let xStart = 0;
-let i = -1;
-let off = false;
-let curWidth = 0;
+
+const MIN_WIDTH = 50;
 
 export default <T extends Record<string, any>>(props: IProps<T>) => {
-  const { isPro, columns: propColumns, ...resetProps } = props;
+  const { isPro, columns: propColumns, scroll, ...resetProps } = props;
 
-  const [handlePos, setHandlePos] = useState<{ left: number; top: number } | null>(null);
-  const [columns, setColumns] = useState<any[]>([]);
-  const [tableSize, setTableSize] = useState<{ width: number; height: number }>();
+  const [handlePosLeft, setHandlePosLeft] = useState<number | null>(null);
+  const [columns, setColumns] = useState<ColumnType<T>[]>([]);
+  const [tableRect, setTableSize] = useState<{ width: number; height: number; top: number }>();
 
   const ref = useRef<HTMLDivElement>(null);
+  const isMovingRef = useRef(false);
+  const xStartRef = useRef(0);
+  const curCellInfoRef = useRef({ index: -1, width: 0 });
 
-  const width = useMemo(() => columns?.reduce((acc, cur) => acc + (cur.width || 0), 0), [columns]);
+  const width = useMemo(
+    () => columns?.reduce((acc, cur) => +(cur?.width || MIN_WIDTH) + acc, 0),
+    [columns],
+  );
 
-  const components = {
-    header: {
-      cell: Cell,
-    },
-  };
-
+  // 监听鼠标移动事件，确定handler的显示与否以及显示的位置
   const handleCellMouseMove = (e: React.MouseEvent<HTMLDivElement>, index: number) => {
     const { clientX } = e;
 
-    const { right, top, width } = (e.target as HTMLElement).getBoundingClientRect();
+    const { right, width } = (e.target as HTMLElement).getBoundingClientRect();
 
-    if (off) return;
+    if (isMovingRef.current) return; // 如果正在进行拖拽，不走以下逻辑
 
     if (right - clientX <= 10) {
-      setHandlePos({ left: right - 5, top });
-      i = index;
-      curWidth = width;
-    } else {
-      setHandlePos(null);
-      curWidth = 0;
+      setHandlePosLeft(right - 5);
     }
+
+    curCellInfoRef.current = { index, width };
   };
 
   const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
-    off = true;
-    xStart = e.clientX;
-    document.onmousemove = (e) => {
-      const { clientX } = e;
+    isMovingRef.current = true;
+    xStartRef.current = e.clientX;
 
-      setHandlePos((pos) => ({
-        ...(pos || {}),
-        left: clientX,
-      }));
+    document.onmousemove = (e) => {
+      setHandlePosLeft(e.clientX);
     };
   };
 
   const handleMouseUp = (e: React.MouseEvent<HTMLDivElement>) => {
-    setHandlePos(null);
+    setHandlePosLeft(null);
     document.onmousemove = null;
-    const dis = e.clientX - xStart;
 
+    if (curCellInfoRef.current.index === -1) return;
+    // 重新计算列宽
+    const dis = e.clientX - xStartRef.current;
     const cols = [...columns];
 
-    cols[i] = { ...cols[i], width: Math.max((cols[i].width || curWidth) + dis, 50) };
+    cols[curCellInfoRef.current.index] = {
+      ...cols[curCellInfoRef.current.index],
+      width: Math.max(
+        +(cols[curCellInfoRef.current.index].width || curCellInfoRef.current.width) + dis,
+        MIN_WIDTH,
+      ),
+    };
     setColumns(cols);
-    off = false;
+
+    isMovingRef.current = false;
   };
 
-  const handleMouseLeave = () => {
-    console.log(handlePos, 'handlePos');
-    // if (handlePos) {
-    //   setHandlePos(null);
-    // }
+  const handleWrapperMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (handlePosLeft && Math.abs(e.clientX - handlePosLeft) > 20) {
+      setHandlePosLeft(null);
+    }
   };
 
   useEffect(() => {
-    const cols = propColumns?.map((col, index) => ({
+    const cols: ColumnType<T>[] = propColumns?.map((col, index) => ({
       ...col,
       onHeaderCell: () => ({
         onMouseMove: (e: React.MouseEvent<any>) => handleCellMouseMove(e, index),
@@ -108,8 +112,10 @@ export default <T extends Record<string, any>>(props: IProps<T>) => {
     const observer = new MutationObserver((mutationsList) => {
       for (let mutation of mutationsList) {
         if (mutation.type === 'attributes' && mutation.attributeName === 'style') {
-          const { width, height } = (mutation?.target as HTMLTableElement)?.getBoundingClientRect();
-          setTableSize({ width, height });
+          const { width, height, top } = (
+            mutation?.target as HTMLTableElement
+          )?.getBoundingClientRect();
+          setTableSize({ width, height, top });
         }
       }
     });
@@ -122,19 +128,26 @@ export default <T extends Record<string, any>>(props: IProps<T>) => {
   }, []);
 
   return (
-    <div className="erp-table_container" ref={ref}>
-      <Table
-        {...resetProps}
-        // components={components}
-        columns={columns}
-        scroll={{ x: Math.max(width, tableSize?.width || 0) }}
-      ></Table>
+    <div className="erp-table_container" ref={ref} onMouseMove={handleWrapperMouseMove}>
+      {isPro ? (
+        <ProTable
+          {...resetProps}
+          columns={columns as ProColumns<T, 'text'>[]}
+          scroll={{ ...(scroll || {}), x: Math.max(width, tableRect?.width || 0) }}
+        ></ProTable>
+      ) : (
+        <Table
+          {...resetProps}
+          columns={columns}
+          scroll={{ ...(scroll || {}), x: Math.max(width, tableRect?.width || 0) }}
+        ></Table>
+      )}
+
       <div
         className="erp-table_handle"
-        style={{ left: handlePos?.left, top: handlePos?.top, height: tableSize?.height }}
+        style={{ left: handlePosLeft || -1000, top: tableRect?.top, height: tableRect?.height }}
         onMouseDown={handleMouseDown}
         onMouseUp={handleMouseUp}
-        onMouseLeave={handleMouseLeave}
       ></div>
     </div>
   );

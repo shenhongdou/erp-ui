@@ -78,7 +78,14 @@ const dataSource = [
 ];
 
 export default () => {
-  return <WidthResizableTable columns={columns} dataSource={dataSource}></WidthResizableTable>;
+  return (
+    <WidthResizableTable
+      isPro
+      columns={columns}
+      dataSource={dataSource}
+      scroll={{ x: 600 }}
+    ></WidthResizableTable>
+  );
 };
 ```
 
