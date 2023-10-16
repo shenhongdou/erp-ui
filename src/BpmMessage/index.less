@@ -12,17 +12,11 @@
     // overflow: auto;
   }
 
-  .erp-bpm-message__list.erp-bpm-message__fix {
-    flex: 1;
-    min-height: 0;
-    overflow: auto;
-  }
-
   .erp-bpm-message__editor {
     position: relative;
   }
 
-  .ql-container {
+  .ql-editor {
     min-height: 100px;
   }
 
@@ -44,5 +38,18 @@
 
   .rc-textarea {
     margin-bottom: 34px;
+  }
+}
+
+.erp-bpm-message__fix {
+  .erp-bpm-message__list {
+    flex: 1;
+    min-height: 0;
+    overflow: auto;
+  }
+
+  .ql-editor {
+    max-height: 300px;
+    overflow: auto;
   }
 }

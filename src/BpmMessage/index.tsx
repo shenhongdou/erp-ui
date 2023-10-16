@@ -259,11 +259,8 @@ export default (props: IProps) => {
   }, [processInstanceId]);
 
   return (
-    <div className="erp-bpm-message">
-      <div
-        className={classNames(['erp-bpm-message__list', { 'erp-bpm-message__fix': fixEditor }])}
-        ref={listRef}
-      >
+    <div className={classNames(['erp-bpm-message', { 'erp-bpm-message__fix': fixEditor }])}>
+      <div className={'erp-bpm-message__list'} ref={listRef}>
         {!list?.length && <Empty />}
 
         {list?.map((item) => (
