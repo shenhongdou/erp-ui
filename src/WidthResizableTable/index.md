@@ -83,7 +83,7 @@ export default () => {
       isPro
       columns={columns}
       dataSource={dataSource}
-      scroll={{ x: 600 }}
+      // scroll={{ x: 600 }}
     ></WidthResizableTable>
   );
 };

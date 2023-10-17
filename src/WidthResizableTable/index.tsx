@@ -29,9 +29,9 @@ const MIN_WIDTH = 50;
 export default <T extends Record<string, any>>(props: IProps<T>) => {
   const { isPro, columns: propColumns, scroll, ...resetProps } = props;
 
-  const [handlePosLeft, setHandlePosLeft] = useState<number | null>(null);
+  const [handlePos, setHandlePos] = useState<{ left: number; top?: number } | null>(null);
   const [columns, setColumns] = useState<ColumnType<T>[]>([]);
-  const [tableRect, setTableSize] = useState<{ width: number; height: number; top: number }>();
+  const [tableRect, setTableRect] = useState<{ width: number; height: number }>();
 
   const ref = useRef<HTMLDivElement>(null);
   const isMovingRef = useRef(false);
@@ -45,14 +45,13 @@ export default <T extends Record<string, any>>(props: IProps<T>) => {
 
   // 监听鼠标移动事件，确定handler的显示与否以及显示的位置
   const handleCellMouseMove = (e: React.MouseEvent<HTMLDivElement>, index: number) => {
-    const { clientX } = e;
-
-    const { right, width } = (e.target as HTMLElement).getBoundingClientRect();
+    const { clientX } = e; // clientX,鼠标在屏幕的横坐标值，
+    const { right, width, top } = (e.target as HTMLElement).getBoundingClientRect();
 
     if (isMovingRef.current) return; // 如果正在进行拖拽，不走以下逻辑
 
     if (right - clientX <= 10) {
-      setHandlePosLeft(right - 5);
+      setHandlePos({ left: right - 5, top });
     }
 
     curCellInfoRef.current = { index, width };
@@ -63,12 +62,12 @@ export default <T extends Record<string, any>>(props: IProps<T>) => {
     xStartRef.current = e.clientX;
 
     document.onmousemove = (e) => {
-      setHandlePosLeft(e.clientX);
+      setHandlePos((pos) => ({ left: e.clientX, top: pos?.top }));
     };
   };
 
   const handleMouseUp = (e: React.MouseEvent<HTMLDivElement>) => {
-    setHandlePosLeft(null);
+    setHandlePos(null);
     document.onmousemove = null;
 
     if (curCellInfoRef.current.index === -1) return;
@@ -89,8 +88,8 @@ export default <T extends Record<string, any>>(props: IProps<T>) => {
   };
 
   const handleWrapperMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (handlePosLeft && Math.abs(e.clientX - handlePosLeft) > 20) {
-      setHandlePosLeft(null);
+    if (handlePos?.left && Math.abs(e.clientX - handlePos.left) > 20) {
+      setHandlePos(null);
     }
   };
 
@@ -112,10 +111,9 @@ export default <T extends Record<string, any>>(props: IProps<T>) => {
     const observer = new MutationObserver((mutationsList) => {
       for (let mutation of mutationsList) {
         if (mutation.type === 'attributes' && mutation.attributeName === 'style') {
-          const { width, height, top } = (
-            mutation?.target as HTMLTableElement
-          )?.getBoundingClientRect();
-          setTableSize({ width, height, top });
+          const { width, height } = (mutation?.target as HTMLTableElement)?.getBoundingClientRect();
+
+          setTableRect({ width, height });
         }
       }
     });
@@ -145,7 +143,11 @@ export default <T extends Record<string, any>>(props: IProps<T>) => {
 
       <div
         className="erp-table_handle"
-        style={{ left: handlePosLeft || -1000, top: tableRect?.top, height: tableRect?.height }}
+        style={{
+          left: `${handlePos?.left || -1000}px`,
+          top: `${handlePos?.top}px`,
+          height: tableRect?.height,
+        }}
         onMouseDown={handleMouseDown}
         onMouseUp={handleMouseUp}
       ></div>
