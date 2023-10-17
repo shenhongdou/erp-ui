@@ -45,10 +45,10 @@ export default <T extends Record<string, any>>(props: IProps<T>) => {
 
   // 监听鼠标移动事件，确定handler的显示与否以及显示的位置
   const handleCellMouseMove = (e: React.MouseEvent<HTMLDivElement>, index: number) => {
+    if (isMovingRef.current || (e?.target as HTMLElement)?.tagName !== 'TH') return; // 如果正在进行拖拽，不走以下逻辑， 配置了fixed后span标签也会被绑定此事件
+
     const { clientX } = e; // clientX,鼠标在屏幕的横坐标值，
     const { right, width, top } = (e.target as HTMLElement).getBoundingClientRect();
-
-    if (isMovingRef.current) return; // 如果正在进行拖拽，不走以下逻辑
 
     if (right - clientX <= 10) {
       setHandlePos({ left: right - 5, top });

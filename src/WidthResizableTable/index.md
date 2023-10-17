@@ -12,6 +12,7 @@ const columns = [
     dataIndex: 'date',
     width: 200,
     ellipsis: true,
+    fixed: 'left',
   },
   {
     title: 'Amount',
@@ -79,12 +80,20 @@ const dataSource = [
 
 export default () => {
   return (
-    <WidthResizableTable
-      isPro
-      columns={columns}
-      dataSource={dataSource}
-      // scroll={{ x: 600 }}
-    ></WidthResizableTable>
+    <>
+      <WidthResizableTable
+        isPro
+        columns={columns}
+        dataSource={dataSource}
+        // scroll={{ x: 600 }}
+      ></WidthResizableTable>
+
+      <WidthResizableTable
+        columns={columns}
+        dataSource={dataSource}
+        // scroll={{ x: 600 }}
+      ></WidthResizableTable>
+    </>
   );
 };
 ```
