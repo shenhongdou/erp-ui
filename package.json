@@ -37,13 +37,17 @@
     "react": "^17.0.0",
     "react-infinite-scroll-component": "^6.1.0",
     "react-quill": "^2.0.0",
-    "react-resizable": "^3.0.4"
+    "react-resizable": "^3.0.4",
+    "react-window": "^1.8.9",
+    "react-window-infinite-loader": "^1.0.9"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^5.15.1",
     "@testing-library/react": "^12.1.2",
     "@types/file-saver": "^2.0.5",
     "@types/jest": "^27.0.3",
+    "@types/react-window": "^1.8.6",
+    "@types/react-window-infinite-loader": "^1.0.7",
     "@umijs/fabric": "^2.8.1",
     "@umijs/test": "^3.0.5",
     "babel-plugin-import": "^1.13.5",
