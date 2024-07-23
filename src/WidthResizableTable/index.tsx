@@ -7,7 +7,7 @@ import type { ProColumns } from '@ant-design/pro-table';
 import './index.less';
 
 /**
- * 1. 画一个handler，监听鼠标hover到哪一列，然后handler定位到对应的列最右边
+ * 1. 画一个handler，监听鼠标移动，计算handler显示位置
  * 2. 拖动handler，改变handler的位置
  * 3. 释放handler的时候，根据拖动的距离计算对应的列改变后的列宽
  *  3.1 需要判断是放大还是缩小？
@@ -25,6 +25,19 @@ interface IProps<T> {
 }
 
 const MIN_WIDTH = 50;
+
+const throttle = (fn: () => void, delay = 300) => {
+  let timer: number | null = null;
+
+  return () => {
+    if (timer) return;
+
+    timer = setTimeout(() => {
+      typeof fn === 'function' && fn();
+      timer = null;
+    }, delay);
+  };
+};
 
 export default <T extends Record<string, any>>(props: IProps<T>) => {
   const { isPro, columns: propColumns, scroll, ...resetProps } = props;
@@ -50,6 +63,7 @@ export default <T extends Record<string, any>>(props: IProps<T>) => {
     const { clientX } = e; // clientX,鼠标在屏幕的横坐标值，
     const { right, width, top } = (e.target as HTMLElement).getBoundingClientRect();
 
+    // 当鼠标移动到距离列右边10px以内，显示hander
     if (right - clientX <= 10) {
       setHandlePos({ left: right - 5, top });
     }
@@ -106,6 +120,7 @@ export default <T extends Record<string, any>>(props: IProps<T>) => {
 
   useEffect(() => {
     const table = ref?.current?.querySelector('table');
+
     if (!table) return;
 
     const observer = new MutationObserver((mutationsList) => {

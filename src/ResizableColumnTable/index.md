@@ -63,7 +63,9 @@ const dataSource = [
   },
 ];
 
-export default () => <ResizableColumnTable bordered columns={columns} dataSource={dataSource} />;
+export default () => (
+  <ResizableColumnTable bordered columns={columns} dataSource={dataSource} scroll={{ x: 800 }} />
+);
 ```
 
 <API></API>
