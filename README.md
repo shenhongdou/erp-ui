@@ -17,3 +17,4 @@ yarn deploy
 7. 0.1.24 bpm message 支持配置是否固定住编辑器不跟随滚动条滚动，即滚动区域是整个组件还是 List 部分。
 
 8. 0.2.0 增加 SpaceView。
+9. 0.2.1 增加 titleRightRender API。

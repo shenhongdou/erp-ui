@@ -37,12 +37,14 @@ interface IProps {
    * @default           'en'
    */
   language: string;
+  titleRightRender?: (data: any) => React.ReactNode;
 }
 
 export default (props: IProps) => {
-  const { env, token, wekiToken, language = 'en' } = props;
+  const { env, token, wekiToken, language = 'en', titleRightRender } = props;
 
   const [loading, setLoading] = useState(false);
+  const [detailLoading, setDetailLoading] = useState(false);
   const [categorys, setCategorys] = useState<any[]>([]);
   const [currentTab, setCurrentTab] = useState<string>(); // 当前选中的tab的key值
   const [stack, setStack] = useState<
@@ -55,10 +57,11 @@ export default (props: IProps) => {
   const currentData = useMemo(() => stack.at(-1), [stack]);
 
   const getCategorys = async () => {
+    setLoading(true);
     const ret = await fetchCategorys({ env, token, wekiToken, params: { language } }).catch((err) =>
       console.error(err),
     );
-
+    setLoading(false);
     if (!ret?.result) return;
     setCategorys(ret.object);
 
@@ -79,9 +82,9 @@ export default (props: IProps) => {
   const getCurrentCategoryDetail = async (categoryId: number) => {
     if (!categoryId) return;
 
-    setLoading(true);
+    setDetailLoading(true);
     const ret = await getSubCategoryOrArticle(categoryId).catch((err) => console.error(err));
-    setLoading(false);
+    setDetailLoading(false);
 
     if (!ret?.result) return;
 
@@ -89,12 +92,14 @@ export default (props: IProps) => {
   };
 
   const getArticleList = async (keywords: string) => {
+    setDetailLoading(true);
     const ret = await searchArticle({
       env,
       token,
       wekiToken,
       params: { language, keywords },
     }).catch((err) => console.error(err));
+    setDetailLoading(false);
 
     setStack((stack) => [...(stack || []), { type: 'list', data: ret?.object || [] }]);
   };
@@ -109,12 +114,14 @@ export default (props: IProps) => {
   };
 
   const getArticleDetail = async (articleId: number, language: string) => {
+    setDetailLoading(true);
     const ret = await fetchArticleDetail({
       env,
       token,
       wekiToken,
       params: { articleId, language },
     }).catch((err) => console.error(err));
+    setDetailLoading(false);
 
     setStack((stack) => [
       ...(stack || []),
@@ -178,12 +185,12 @@ export default (props: IProps) => {
 
   return (
     <div className="weki-space-view">
-      <Spin spinning={false} wrapperClassName="weki-loading">
+      <Spin spinning={loading} wrapperClassName="weki-loading">
         {categorys?.length > 0 && (
           <Tabs className="weki-categorys" activeKey={currentTab} onChange={handleTabChange}>
             {categorys?.map((item) => (
               <Tabs.TabPane tab={item.categoryName} key={item.categoryId}>
-                <Spin spinning={loading}>
+                <Spin spinning={detailLoading}>
                   {currentData?.type === 'list' && (
                     <>
                       {item.categoryId != -1 && (
@@ -198,10 +205,10 @@ export default (props: IProps) => {
                       )}
 
                       {stack?.length > 1 && (
-                        <div className="weki-back" onClick={handelBack}>
+                        <a className="weki-back" onClick={handelBack}>
                           <LeftOutlined />
                           Back
-                        </div>
+                        </a>
                       )}
 
                       {currentData?.data?.length > 0 &&
@@ -211,6 +218,7 @@ export default (props: IProps) => {
                               <div key={item.id} className="weki-faq-item">
                                 <div className="weki-faq-title-wrapper">
                                   <h3 className="weli-faq-title">{item.title}</h3>
+                                  {typeof titleRightRender === 'function' && titleRightRender(item)}
                                 </div>
                                 <div
                                   className="richText ql-editor"
@@ -240,10 +248,10 @@ export default (props: IProps) => {
                   {currentData?.type === 'detail' && (
                     <>
                       {stack?.length > 1 && (
-                        <div className="weki-back" onClick={handelBack}>
+                        <a className="weki-back" onClick={handelBack}>
                           <LeftOutlined />
                           Back
-                        </div>
+                        </a>
                       )}
 
                       <div className="weki-article-wrapper">
