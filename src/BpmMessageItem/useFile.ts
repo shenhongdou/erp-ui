@@ -16,11 +16,14 @@ export default (token: string, env: 'tb1' | 'dev' | 'pro') => {
 
     const hide = message.loading(`文件解析中...`, 0);
 
-    const ret = await fetch(`${getApiPrefixAccordEnv(env)}/admin/file/download?url=${sourceUrl}`, {
-      headers: {
-        Authorization: 'Bearer ' + token,
+    const ret = await fetch(
+      `${getApiPrefixAccordEnv(env as any)}/admin/file/download?url=${sourceUrl}`,
+      {
+        headers: {
+          Authorization: 'Bearer ' + token,
+        },
       },
-    });
+    );
 
     if (ret?.status !== 200) {
       hide();

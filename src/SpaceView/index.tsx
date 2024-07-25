@@ -33,7 +33,7 @@ interface IProps {
    */
   wekiToken: string;
   /**
-   * @description       文章支持多语言 支持 'env' | "zh" | "zh-Hant" | "ko" | "ja" | "vi"
+   * @description       文章支持多语言 支持 'en' | "zh" | "zh-Hant" | "ko" | "ja" | "vi"
    * @default           'en'
    */
   language: string;
