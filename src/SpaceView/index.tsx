@@ -38,10 +38,11 @@ interface IProps {
    */
   language: string;
   titleRightRender?: (data: any) => React.ReactNode;
+  onSearchCallback?: (value: string) => void;
 }
 
 export default (props: IProps) => {
-  const { env, token, wekiToken, language = 'en', titleRightRender } = props;
+  const { env, token, wekiToken, language = 'en', titleRightRender, onSearchCallback } = props;
 
   const [loading, setLoading] = useState(false);
   const [detailLoading, setDetailLoading] = useState(false);
@@ -111,6 +112,7 @@ export default (props: IProps) => {
 
     getArticleList(value);
     setKeywords('');
+    typeof onSearchCallback === 'function' && onSearchCallback(value);
   };
 
   const getArticleDetail = async (articleId: number, language: string) => {
