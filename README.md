@@ -18,3 +18,4 @@ yarn deploy
 
 8. 0.2.0 增加 SpaceView。
 9. 0.2.1 增加 titleRightRender API。
+10. 0.2.2 增加 onSearchCallback API。
