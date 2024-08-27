@@ -1,17 +1,18 @@
 import { saveAs } from 'file-saver';
-// 根据env获取api
-export const getApiPrefixAccordEnv = (
-  env: 'tb1' | 'dev' | 'pro',
-  prefix: string | false = 'central/bpm',
-) => {
-  switch (env) {
-    case 'tb1':
-    case 'dev':
-      if (!prefix) return `https://api.${env}.sayweee.net`;
 
+import { ENV } from '../src/types/global';
+// 根据env获取api
+export const getApiPrefixAccordEnv = (env: ENV, prefix: string | false = 'central/bpm') => {
+  switch (env) {
+    case ENV.TB1:
+    case ENV.DEV:
+      if (!prefix) return `https://api.${env}.sayweee.net`;
       return `https://api.${env}.sayweee.net/${prefix}`;
-    case 'pro':
-      return 'https://api.sayweee.net/central/bpm';
+
+    case ENV.PRO:
+    case ENV.PROD:
+      if (!prefix) return `https://api.sayweee.net`;
+      return `https://api.sayweee.net/${prefix}`;
   }
 };
 
