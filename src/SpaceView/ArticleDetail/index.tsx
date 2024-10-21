@@ -89,7 +89,7 @@ export default (props: IProps) => {
   }, [data, id]);
 
   return (
-    <Spin spinning={loading}>
+    <Spin spinning={loading} wrapperClassName={'weki-article-detail'}>
       <div className="weki-article-wrapper">
         <div className="weki-article-title">{data?.title}</div>
 

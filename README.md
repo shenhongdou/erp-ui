@@ -22,3 +22,4 @@ yarn deploy
 
 11. 0.3.0 SpaceView 改版，支持 SRM 接入，Search 调整到头部，支持 list item click 自定义事件
 12. 0.3.1 增加 ArticleDetail 组件
+13. 0.3.2 ArticleDetail 样式优化
