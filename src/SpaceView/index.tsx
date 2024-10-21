@@ -4,7 +4,7 @@ import { LeftOutlined } from '@ant-design/icons';
 
 import ArticleList from './article-list';
 import SearchResult from './search-result';
-import ArticleDetail from './article-detail';
+import ArticleDetail from './ArticleDetail';
 
 import {
   fetchCategorys,
@@ -112,9 +112,9 @@ export default (props: IProps) => {
   const getCurrentCategoryDetail = async (categoryId: number) => {
     if (!categoryId) return;
 
-    setDetailLoading(true);
+    setLoading(true);
     const ret = await getSubCategoryOrArticle(categoryId).catch((err) => console.error(err));
-    setDetailLoading(false);
+    setLoading(false);
 
     if (!ret?.result) return;
 
@@ -122,14 +122,14 @@ export default (props: IProps) => {
   };
 
   const getSearchList = async (keywords: string) => {
-    setDetailLoading(true);
+    setLoading(true);
     const ret = await searchArticle({
       env,
       token,
       wekiToken,
       params: { language, keywords },
     }).catch((err) => console.error(err));
-    setDetailLoading(false);
+    setLoading(false);
 
     setSearchList(ret?.object);
   };
@@ -167,7 +167,7 @@ export default (props: IProps) => {
   };
 
   const handleTabChange = (activeKey: any) => {
-    setStack([]);
+    setStack(() => []);
     setCurrentTab(activeKey);
   };
 

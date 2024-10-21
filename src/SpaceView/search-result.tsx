@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { LeftOutlined } from '@ant-design/icons';
 
 import ArticleList from './article-list';
-import ArticleDetail from './article-detail';
+import ArticleDetail from './ArticleDetail';
 
 import { ENV } from '../types/global';
 
@@ -39,7 +39,7 @@ export default (props: IProps) => {
 
   return (
     <div>
-      <div>
+      <div className="weki-search-wrapper">
         <a className="weki-back" onClick={handleBack}>
           <LeftOutlined />
           Back

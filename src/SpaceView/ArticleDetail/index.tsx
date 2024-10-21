@@ -1,11 +1,13 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { message, Button, Spin } from 'antd';
 
-import MyIcon from '../MyIcon';
+import MyIcon from '../../MyIcon';
 
-import { SubCategoryOrArticleItemType } from '../types/space-view';
-import { markUseful, markUseless, fetchArticleDetail } from './api';
-import { ENV } from '../types/global';
+import { SubCategoryOrArticleItemType } from '../../types/space-view';
+import { markUseful, markUseless, fetchArticleDetail } from '../api';
+import { ENV } from '../../types/global';
+
+import './index.less';
 
 interface IProps {
   data?: any;

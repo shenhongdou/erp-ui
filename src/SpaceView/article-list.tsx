@@ -2,7 +2,11 @@ import React from 'react';
 import { Empty } from 'antd';
 import { RightOutlined } from '@ant-design/icons';
 
+import MyIcon from '../MyIcon';
+
 import { SubCategoryOrArticleItemType } from '../types/space-view';
+
+import './article-list.less';
 
 interface IProps {
   list: any[];
@@ -20,7 +24,7 @@ export default (props: IProps) => {
   if (!list?.length) return <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />;
 
   return (
-    <>
+    <div className="weki-article-list">
       {list?.map((item) => {
         if (item.type === SubCategoryOrArticleItemType.FAQ)
           return (
@@ -37,18 +41,24 @@ export default (props: IProps) => {
           );
 
         return (
-          <a
+          <div
             className="weki-article-item-wrapper"
             key={item.id}
             onClick={() => handleArticleClick(item.id, item.type)}
           >
             <div className="weki-article-item">
-              {item.title}
+              <a>
+                {item.type !== SubCategoryOrArticleItemType.Category && (
+                  <MyIcon type="icon-line-articlewenzhang" className="weki-article-icon" />
+                )}
+
+                {item.title}
+              </a>
               <RightOutlined className="weki-to-right" />
             </div>
-          </a>
+          </div>
         );
       })}
-    </>
+    </div>
   );
 };
