@@ -1,34 +1,43 @@
-## SpaceView
+## SortableTabs
 
 Demo:
 
 ```tsx
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { SortableTabs } from '@weee-erp/erp-ui';
 
-const items = [
+const data = [
   {
-    key: '1',
-    label: 'Tab 1',
-    children: 'Content of Tab Pane 1',
+    key: '11',
+    label: 'Tab 11',
+    children: 'Content of Tab Pane 11',
   },
   {
-    key: '2',
-    label: 'Tab 2',
-    children: 'Content of Tab Pane 2',
+    key: 22,
+    label: 'Tab 22',
+    children: 'Content of Tab Pane 22',
   },
   {
-    key: '3',
-    label: 'Tab 3',
-    children: 'Content of Tab Pane 3',
+    key: 33,
+    label: 'Tab 33',
+    children: 'Content of Tab Pane 33',
   },
 ];
 
-export default () => (
-  <div style={{ height: 600, width: '100%' }}>
-    <SortableTabs items={items} />
-  </div>
-);
+export default () => {
+  const [items, setItems] = useState(data);
+  const [activeKey, setactiveKey] = useState(data?.[0]?.key);
+
+  const handleChange = (activeKey) => {
+    setactiveKey(activeKey);
+  };
+
+  return (
+    <div style={{ height: 600, width: '100%' }}>
+      <SortableTabs items={items} />
+    </div>
+  );
+};
 ```
 
 <API></API>

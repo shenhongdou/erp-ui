@@ -25,3 +25,4 @@ yarn deploy
 13. 0.3.2 ArticleDetail 样式优化
 
 14. 0.4.0 增加 SortableTabs，支持 tabs 拖动改变 tab 顺序
+15. 0.4.1 -- 0.4.6 修复 SortableTabs bug
