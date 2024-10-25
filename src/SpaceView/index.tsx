@@ -1,24 +1,28 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { Spin, Input, Empty, message, Tabs, Button } from 'antd';
-import { LeftOutlined, RightOutlined } from '@ant-design/icons';
+import { Spin, Input, Empty, Tabs, version } from 'antd';
+import { LeftOutlined } from '@ant-design/icons';
 
-import MyIcon from '../MyIcon';
+import ArticleList from './article-list';
+import SearchResult from './search-result';
+import ArticleDetail from './ArticleDetail';
 
 import {
   fetchCategorys,
   fetchSubCategoryOrArticle,
   fetchArticleDetail,
-  markUseful,
-  markUseless,
   searchArticle,
 } from './api';
 import { ENV } from '../types/global';
-import { SubCategoryOrArticleItemType, ArticleDetail } from '../types/space-view';
+import {
+  SubCategoryOrArticleItemType,
+  ArticleDetail as ArticleDetailType,
+} from '../types/space-view';
 
 import 'react-quill/dist/quill.core.css';
 import '../styles/quill.table.css';
 import './index.less';
 
+// TODO 处理tab.panel兼容性问题
 interface IProps {
   /**
    * @description       环境 'tb1' | 'dev' | 'prod' | 'pro' ('prod' | 'pro'都代表生产环境)
@@ -37,12 +41,37 @@ interface IProps {
    * @default           'en'
    */
   language: string;
+  /**
+   *
+   * @param data article数据
+   * @returns 渲染的title
+   */
   titleRightRender?: (data: any) => React.ReactNode;
+  /**
+   *
+   * @param value
+   * @returns
+   */
   onSearchCallback?: (value: string) => void;
+
+  /**
+   *
+   * @description
+   *
+   */
+  onListItemClick: (id: number) => void;
 }
 
 export default (props: IProps) => {
-  const { env, token, wekiToken, language = 'en', titleRightRender, onSearchCallback } = props;
+  const {
+    env,
+    token,
+    wekiToken,
+    language = 'en',
+    titleRightRender,
+    onSearchCallback,
+    onListItemClick,
+  } = props;
 
   const [loading, setLoading] = useState(false);
   const [detailLoading, setDetailLoading] = useState(false);
@@ -51,9 +80,9 @@ export default (props: IProps) => {
   const [stack, setStack] = useState<
     ({ type: 'list'; data: any[] } | { type: 'detail'; data: any })[]
   >([]);
-  const [usefullLoading, setUsefullLoading] = useState(false);
-  const [uselessLoading, setUselessLoading] = useState(false);
   const [keywords, setKeywords] = useState('');
+  const [isSearch, setIsSearch] = useState(false);
+  const [searchList, setSearchList] = useState<any[]>([]);
 
   const currentData = useMemo(() => stack.at(-1), [stack]);
 
@@ -83,26 +112,26 @@ export default (props: IProps) => {
   const getCurrentCategoryDetail = async (categoryId: number) => {
     if (!categoryId) return;
 
-    setDetailLoading(true);
+    setLoading(true);
     const ret = await getSubCategoryOrArticle(categoryId).catch((err) => console.error(err));
-    setDetailLoading(false);
+    setLoading(false);
 
     if (!ret?.result) return;
 
     setStack((stack) => [...(stack || []), { type: 'list', data: ret?.object || [] }]);
   };
 
-  const getArticleList = async (keywords: string) => {
-    setDetailLoading(true);
+  const getSearchList = async (keywords: string) => {
+    setLoading(true);
     const ret = await searchArticle({
       env,
       token,
       wekiToken,
       params: { language, keywords },
     }).catch((err) => console.error(err));
-    setDetailLoading(false);
+    setLoading(false);
 
-    setStack((stack) => [...(stack || []), { type: 'list', data: ret?.object || [] }]);
+    setSearchList(ret?.object);
   };
 
   const handleSearch = (value: string) => {
@@ -110,7 +139,8 @@ export default (props: IProps) => {
       return;
     }
 
-    getArticleList(value);
+    setIsSearch(true);
+    getSearchList(value);
     setKeywords('');
     typeof onSearchCallback === 'function' && onSearchCallback(value);
   };
@@ -127,7 +157,7 @@ export default (props: IProps) => {
 
     setStack((stack) => [
       ...(stack || []),
-      { type: 'detail', data: ret?.object || ({} as ArticleDetail) },
+      { type: 'detail', data: ret?.object || ({} as ArticleDetailType) },
     ]);
   };
 
@@ -137,44 +167,20 @@ export default (props: IProps) => {
   };
 
   const handleTabChange = (activeKey: any) => {
-    setStack([]);
+    setStack(() => []);
     setCurrentTab(activeKey);
   };
 
   const handleCategoryOrArticleClick = (id: number, type: any) => {
     if (type === SubCategoryOrArticleItemType.Category) {
-      getCurrentCategoryDetail(id);
+      return getCurrentCategoryDetail(id);
+    }
+
+    if (typeof onListItemClick === 'function') {
+      onListItemClick(id);
     } else {
       getArticleDetail(id, language);
     }
-  };
-
-  const handleUseful = async () => {
-    setUsefullLoading(true);
-    const ret = await markUseful({
-      env,
-      token,
-      wekiToken,
-      params: { articleId: currentData?.data?.articleId },
-    }).catch((err) => console.error(err));
-    setUsefullLoading(false);
-
-    if (!ret?.result) return;
-    message.success('Marked as useful!');
-  };
-
-  const handleUseless = async () => {
-    setUselessLoading(true);
-    const ret = await markUseless({
-      env,
-      token,
-      wekiToken,
-      params: { articleId: currentData?.data?.articleId },
-    }).catch((err) => console.error(err));
-    setUselessLoading(false);
-
-    if (!ret?.result) return;
-    message.success('Marked as useless!');
   };
 
   useEffect(() => {
@@ -187,25 +193,37 @@ export default (props: IProps) => {
 
   return (
     <div className="weki-space-view">
+      <div className="weki-space-header">
+        <Input.Search
+          className="weki-space-search"
+          allowClear
+          value={keywords}
+          onChange={(e) => setKeywords(e.target.value)}
+          onSearch={handleSearch}
+        />
+      </div>
+
       <Spin spinning={loading} wrapperClassName="weki-loading">
-        {categorys?.length > 0 && (
-          <Tabs className="weki-categorys" activeKey={currentTab} onChange={handleTabChange}>
-            {categorys?.map((item) => (
-              <Tabs.TabPane tab={item.categoryName} key={item.categoryId}>
-                <Spin spinning={detailLoading}>
-                  {currentData?.type === 'list' && (
-                    <>
-                      {item.categoryId != -1 && (
-                        <div className="weki-search-wrapper">
-                          <Input.Search
-                            allowClear
-                            value={keywords}
-                            onChange={(e) => setKeywords(e.target.value)}
-                            onSearch={handleSearch}
-                          />
-                        </div>
-                      )}
-
+        {isSearch ? (
+          <SearchResult
+            list={searchList}
+            titleRightRender={titleRightRender}
+            env={env}
+            token={token}
+            wekiToken={wekiToken}
+            onListItemClick={onListItemClick}
+            onBack={() => {
+              setIsSearch(false);
+              setSearchList([]);
+            }}
+          />
+        ) : (
+          <>
+            {categorys?.length > 0 ? (
+              <Tabs className="weki-categorys" activeKey={currentTab} onChange={handleTabChange}>
+                {categorys?.map((item) => (
+                  <Tabs.TabPane tab={item.categoryName} key={item.categoryId}>
+                    <Spin spinning={detailLoading}>
                       {stack?.length > 1 && (
                         <a className="weki-back" onClick={handelBack}>
                           <LeftOutlined />
@@ -213,100 +231,31 @@ export default (props: IProps) => {
                         </a>
                       )}
 
-                      {currentData?.data?.length > 0 &&
-                        currentData?.data?.map((item) => {
-                          if (item.type === SubCategoryOrArticleItemType.FAQ)
-                            return (
-                              <div key={item.id} className="weki-faq-item">
-                                <div className="weki-faq-title-wrapper">
-                                  <h3 className="weli-faq-title">{item.title}</h3>
-                                  {typeof titleRightRender === 'function' && titleRightRender(item)}
-                                </div>
-                                <div
-                                  className="richText ql-editor"
-                                  dangerouslySetInnerHTML={{ __html: item.content }}
-                                ></div>
-                              </div>
-                            );
-
-                          return (
-                            <a
-                              className="weki-article-item-wrapper"
-                              key={item.id}
-                              onClick={() => handleCategoryOrArticleClick(item.id, item.type)}
-                            >
-                              <div className="weki-article-item">
-                                {item.title}
-                                <RightOutlined className="weki-to-right" />
-                              </div>
-                            </a>
-                          );
-                        })}
-
-                      {!currentData?.data?.length && <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />}
-                    </>
-                  )}
-
-                  {currentData?.type === 'detail' && (
-                    <>
-                      {stack?.length > 1 && (
-                        <a className="weki-back" onClick={handelBack}>
-                          <LeftOutlined />
-                          Back
-                        </a>
+                      {currentData?.type === 'list' && (
+                        <ArticleList
+                          list={currentData?.data}
+                          titleRightRender={titleRightRender}
+                          handleCategoryOrArticleClick={handleCategoryOrArticleClick}
+                        />
                       )}
 
-                      <div className="weki-article-wrapper">
-                        <div className="weki-article-title">{currentData?.data?.title}</div>
-
-                        {currentData?.data?.type === SubCategoryOrArticleItemType.Link ? (
-                          <div className="weki-link">
-                            <a
-                              className="weki-link-content"
-                              target="_blank"
-                              href={currentData?.data?.content || ''}
-                            >
-                              {currentData?.data?.title || ''}
-                              <MyIcon type="icon-link1"></MyIcon>
-                            </a>
-                          </div>
-                        ) : (
-                          <div
-                            className="richText ql-editor"
-                            dangerouslySetInnerHTML={{ __html: currentData?.data?.content }}
-                          ></div>
-                        )}
-                      </div>
-                      <div className="weki-article-footer">
-                        <div>Does the above answer help you:</div>
-                        <div className="weki-use-wrapper">
-                          <Button
-                            className="weki-use-action"
-                            disabled={currentData?.data?.useful === 1}
-                            loading={usefullLoading}
-                            onClick={handleUseful}
-                          >
-                            useful
-                          </Button>
-                          <Button
-                            className="weki-use-action"
-                            disabled={currentData?.data?.useful === 0}
-                            loading={uselessLoading}
-                            onClick={handleUseless}
-                          >
-                            useless
-                          </Button>
-                        </div>
-                      </div>
-                    </>
-                  )}
-                </Spin>
-              </Tabs.TabPane>
-            ))}
-          </Tabs>
+                      {currentData?.type === 'detail' && (
+                        <ArticleDetail
+                          env={env}
+                          token={token}
+                          wekiToken={wekiToken}
+                          data={currentData?.data}
+                        />
+                      )}
+                    </Spin>
+                  </Tabs.TabPane>
+                ))}
+              </Tabs>
+            ) : (
+              <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
+            )}
+          </>
         )}
-
-        {!categorys?.length && <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />}
       </Spin>
     </div>
   );
