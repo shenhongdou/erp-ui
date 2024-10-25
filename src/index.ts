@@ -6,4 +6,5 @@ export { default as Layout } from './Layout';
 export { default as BpmTodoList } from './BpmTodoList';
 export { default as BpmMessage } from './BpmMessage';
 export { default as SpaceView } from './SpaceView';
+export { default as ArticleDetail } from './SpaceView/ArticleDetail';
 export { default as SortableTabs } from './SortableTabs';
