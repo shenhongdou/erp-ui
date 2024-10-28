@@ -8,7 +8,7 @@ import type { TabsProps } from 'antd';
 import DraggableTabNode from './DraggableTabNode';
 
 interface IProps extends Omit<TabsProps, 'onDragEnd'> {
-  onDragEnd: (active: any, over: any) => void;
+  onDragEnd: (active: any, over: any, items: any[]) => void;
 }
 
 const formatKey = (key: any) => {
@@ -41,14 +41,19 @@ const SortableTabs: React.FC<IProps> = (props) => {
 
   const onDragEnd = ({ active, over }: DragEndEvent) => {
     if (active.id !== over?.id) {
-      setInnerItems((prev) => {
-        const activeIndex = findIndex(prev || [], active.id);
-        const overIndex = findIndex(prev || [], over?.id);
+      const activeIndex = findIndex(innerItems || [], active.id);
+      const overIndex = findIndex(innerItems || [], over?.id);
+      const newItems = arrayMove(innerItems || [], activeIndex, overIndex);
+      setInnerItems(newItems);
 
-        return arrayMove(prev || [], activeIndex, overIndex);
-      });
+      // setInnerItems((prev) => {
+      //   const activeIndex = findIndex(prev || [], active.id);
+      //   const overIndex = findIndex(prev || [], over?.id);
 
-      typeof propOnDragEnd === 'function' && propOnDragEnd(active, over);
+      //   return arrayMove(prev || [], activeIndex, overIndex);
+      // });
+
+      typeof propOnDragEnd === 'function' && propOnDragEnd(active, over, newItems);
     }
   };
 
