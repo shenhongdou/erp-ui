@@ -21,6 +21,7 @@ const data = [
     key: 33,
     label: 'Tab 33',
     children: 'Content of Tab Pane 33',
+    sortDisabled: true,
   },
 ];
 
@@ -32,9 +33,13 @@ export default () => {
     setactiveKey(activeKey);
   };
 
+  const onDragError = (errorType) => {
+    console.log('errorType', errorType);
+  };
+
   return (
     <div style={{ height: 600, width: '100%' }}>
-      <SortableTabs items={items} />
+      <SortableTabs items={items} onDragError={onDragError} />
     </div>
   );
 };

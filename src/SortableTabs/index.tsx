@@ -7,8 +7,13 @@ import type { TabsProps } from 'antd';
 
 import DraggableTabNode from './DraggableTabNode';
 
+enum ErrorType {
+  disabled = 'disabled',
+}
+
 interface IProps extends Omit<TabsProps, 'onDragEnd'> {
   onDragEnd: (active: any, over: any, items: any[]) => void;
+  onDragError: (errorType: ErrorType) => void;
 }
 
 const formatKey = (key: any) => {
@@ -22,6 +27,7 @@ const SortableTabs: React.FC<IProps> = (props) => {
     onDragEnd: propOnDragEnd,
     activeKey: propActiveKey,
     className,
+    onDragError,
     ...tabProps
   } = props;
   const [innerItems, setInnerItems] = useState<typeof items>([]);
@@ -40,18 +46,20 @@ const SortableTabs: React.FC<IProps> = (props) => {
   };
 
   const onDragEnd = ({ active, over }: DragEndEvent) => {
+    const activeIndex = findIndex(innerItems || [], active.id);
+    const activeItem = innerItems?.[activeIndex];
+
+    const overIndex = findIndex(innerItems || [], over?.id);
+    const overItem = innerItems?.[overIndex];
+
+    if ((activeItem as any)?.sortDisabled || (overItem as any)?.sortDisabled) {
+      typeof onDragError === 'function' && onDragError(ErrorType.disabled);
+      return;
+    }
+
     if (active.id !== over?.id) {
-      const activeIndex = findIndex(innerItems || [], active.id);
-      const overIndex = findIndex(innerItems || [], over?.id);
       const newItems = arrayMove(innerItems || [], activeIndex, overIndex);
       setInnerItems(newItems);
-
-      // setInnerItems((prev) => {
-      //   const activeIndex = findIndex(prev || [], active.id);
-      //   const overIndex = findIndex(prev || [], over?.id);
-
-      //   return arrayMove(prev || [], activeIndex, overIndex);
-      // });
 
       typeof propOnDragEnd === 'function' && propOnDragEnd(active, over, newItems);
     }
