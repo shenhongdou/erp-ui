@@ -33,8 +33,8 @@ export default () => {
     setactiveKey(activeKey);
   };
 
-  const onDragError = (errorType) => {
-    console.log('errorType', errorType);
+  const onDragError = (errorType, activeItem: any, overItem: any) => {
+    console.log('errorType', errorType, activeItem, overItem);
   };
 
   return (

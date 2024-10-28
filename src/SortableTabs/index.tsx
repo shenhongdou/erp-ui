@@ -8,12 +8,13 @@ import type { TabsProps } from 'antd';
 import DraggableTabNode from './DraggableTabNode';
 
 enum ErrorType {
-  disabled = 'disabled',
+  activeDisabled = 'active-disabled',
+  overDisabled = 'over-disabled',
 }
 
 interface IProps extends Omit<TabsProps, 'onDragEnd'> {
   onDragEnd: (active: any, over: any, items: any[]) => void;
-  onDragError: (errorType: ErrorType) => void;
+  onDragError: (errorType: ErrorType, activeItem: any, overItem: any) => void;
 }
 
 const formatKey = (key: any) => {
@@ -52,8 +53,15 @@ const SortableTabs: React.FC<IProps> = (props) => {
     const overIndex = findIndex(innerItems || [], over?.id);
     const overItem = innerItems?.[overIndex];
 
-    if ((activeItem as any)?.sortDisabled || (overItem as any)?.sortDisabled) {
-      typeof onDragError === 'function' && onDragError(ErrorType.disabled);
+    if ((activeItem as any)?.sortDisabled) {
+      typeof onDragError === 'function' &&
+        onDragError(ErrorType.activeDisabled, activeItem, overItem);
+      return;
+    }
+
+    if ((overItem as any)?.sortDisabled) {
+      typeof onDragError === 'function' &&
+        onDragError(ErrorType.overDisabled, activeItem, overItem);
       return;
     }
 
