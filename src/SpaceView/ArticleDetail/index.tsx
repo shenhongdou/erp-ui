@@ -100,7 +100,8 @@ export default (props: IProps) => {
           {showOwer && <div>Owner: {data?.owner}</div>}
           {showLastUpdate && (
             <div>
-              Last updated on {data?.recUpdateTime ? data?.recUpdateTime : ''} by{' '}
+              Last updated on{' '}
+              {data?.recUpdateTime ? new Date(data?.recUpdateTime).toLocaleString() : ''} by{' '}
               {data?.recUpdateName}
             </div>
           )}
