@@ -86,10 +86,10 @@ export default (props: IProps) => {
   };
 
   useEffect(() => {
-    if (typeof data === 'undefined' && typeof id !== 'undefined') {
+    if (typeof propData === 'undefined' && typeof id !== 'undefined') {
       getArticleDetail(id, language);
     }
-  }, [data, id]);
+  }, [propData, id]);
 
   return (
     <Spin spinning={loading} wrapperClassName={'weki-article-detail'}>
