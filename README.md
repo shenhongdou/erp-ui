@@ -27,3 +27,5 @@ yarn deploy
 14. 0.4.0 增加 SortableTabs，支持 tabs 拖动改变 tab 顺序
 15. 0.4.1 -- 0.4.7 修复 SortableTabs bug
 16. 0.4.8 -- 0.4.9 SortableTabs 支持某些 item 不允许排序
+
+17. 0.4.10 -- 0.4.12 ArticleDetail 组件增加支持 showLastUpdate 和 showOwer

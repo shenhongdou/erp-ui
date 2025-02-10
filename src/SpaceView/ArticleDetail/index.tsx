@@ -27,10 +27,13 @@ interface IProps {
   id?: number;
 
   language?: string;
+
+  showLastUpdate?: boolean;
+  showOwer?: boolean;
 }
 
 export default (props: IProps) => {
-  const { data: propData, env, token, wekiToken, id, language } = props;
+  const { data: propData, env, token, wekiToken, id, language, showLastUpdate, showOwer } = props;
 
   const [usefullLoading, setUsefullLoading] = useState(false);
   const [uselessLoading, setUselessLoading] = useState(false);
@@ -83,15 +86,26 @@ export default (props: IProps) => {
   };
 
   useEffect(() => {
-    if (typeof data === 'undefined' && typeof id !== 'undefined') {
+    if (typeof propData === 'undefined' && typeof id !== 'undefined') {
       getArticleDetail(id, language);
     }
-  }, [data, id]);
+  }, [propData, id]);
 
   return (
     <Spin spinning={loading} wrapperClassName={'weki-article-detail'}>
       <div className="weki-article-wrapper">
         <div className="weki-article-title">{data?.title}</div>
+
+        <div className="weki-article-owner">
+          {showOwer && <div>Owner: {data?.owner}</div>}
+          {showLastUpdate && (
+            <div>
+              Last updated on{' '}
+              {data?.recUpdateTime ? new Date(data?.recUpdateTime).toLocaleString() : ''} by{' '}
+              {data?.recUpdateName}
+            </div>
+          )}
+        </div>
 
         {data?.type === SubCategoryOrArticleItemType.Link ? (
           <div className="weki-link">
